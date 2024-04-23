@@ -23,18 +23,30 @@ export class RegistrationUserUseCase implements ICommandHandler<RegistrationUser
         const passwordSalt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(command.userCreateModel.password, passwordSalt);
 
-        const newUser: User = {
-            id: null,
-            login: command.userCreateModel.login, //valitation not copy in database
-            email: command.userCreateModel.email, //
-            passwordHash: passwordHash,
-            passwordSalt: passwordSalt,
-            createdAt: new Date(),
-            confirmationCode: randomUUID(), //generate code UUID //
-            isConfirmed: false, // by registration
-            expirationDateOfRecoveryCode: null,
-            passwordRecoveryCode: null,
-        };
+        // const newUser: User = {
+        //     id: null,
+        //     login: command.userCreateModel.login, //valitation not copy in database
+        //     email: command.userCreateModel.email, //
+        //     passwordHash: passwordHash,
+        //     passwordSalt: passwordSalt,
+        //     createdAt: new Date(),
+        //     confirmationCode: randomUUID(), //generate code UUID //
+        //     isConfirmed: false, // by registration
+        //     expirationDateOfRecoveryCode: null,
+        //     passwordRecoveryCode: null,
+        //
+        // };
+
+        const newUser = new User();
+        newUser.login = command.userCreateModel.login;
+        newUser.email = command.userCreateModel.email;
+        newUser.passwordHash = passwordHash;
+        newUser.passwordSalt = passwordSalt;
+        newUser.createdAt = new Date();
+        newUser.confirmationCode = randomUUID();
+        newUser.isConfirmed = false;
+        newUser.expirationDateOfRecoveryCode = null;
+        newUser.passwordRecoveryCode = null;
         // const user = new this.UserModel({newUser})
         //this.usersRepository.save()
         await this.usersRepository.createUser(newUser);

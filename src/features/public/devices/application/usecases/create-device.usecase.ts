@@ -17,13 +17,21 @@ export class CreateDeviceUseCase implements ICommandHandler<CreateDeviceCommand>
     constructor(private readonly devicesRepository: DevicesRepository) {}
 
     async execute(command: CreateDeviceCommand): Promise<Device> {
-        const device = {
-            ip: command.ip,
-            deviceId: command.id,
-            userId: command.userid,
-            title: command.title,
-            lastActiveDate: command.lastActiveDate,
-        };
+        // const device = {
+        //     ip: command.ip,
+        //     deviceId: command.id,
+        //     userId: command.userid,
+        //     title: command.title,
+        //     lastActiveDate: command.lastActiveDate,
+        //
+        // };
+        const device = new Device();
+        device.ip = command.ip;
+        device.deviceId = command.id;
+        device.userId = command.userid;
+        device.title = command.title;
+        device.lastActiveDate = command.lastActiveDate;
+
         return await this.devicesRepository.createDevice(device);
     }
 }

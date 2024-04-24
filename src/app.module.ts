@@ -5,7 +5,7 @@ import { UserController } from './features/admin/users/api/user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from './features/admin/users/repositories/user-repository';
 import { DeleteUserUseCase } from './features/admin/users/application/usecases/delete-user.command';
-import { CreateUserUseCase } from './features/admin/users/application/usecases/create-user.usecase';
+import { CreateUserCommand, CreateUserUseCase } from './features/admin/users/application/usecases/create-user.usecase';
 import { CqrsModule } from '@nestjs/cqrs';
 import { UsersQueryRepository } from './features/admin/users/repositories/user.query.repository';
 import { AuthController } from './features/public/auth/api/auth.controller';
@@ -54,26 +54,18 @@ import { CommentController } from './features/public/comments/api/comment.contro
 import { UpdateCommentUseCase } from './features/public/comments/application/usecases/update-comment.usecase';
 import { AddReactionUseCase } from './features/public/comments/application/usecases/add-reaction.usecase';
 import { DeleteCommentUseCase } from './features/public/comments/application/usecases/delete-comment.usecase';
-import { UserModule } from './features/admin/users/application/user.module';
+import { AuthModule } from './features/admin/users/authModule';
+import { User } from './features/admin/users/domain/user.entity';
+import { Device } from './features/public/devices/domain/device.entity';
 
-const adapters = [JwtAdapter, EmailAdapter];
-const constraints = [
-    IsUserAlreadyExistConstraint,
-    RegistrationConfirmCodeConstraint,
-    RegistrationEmailResendingConstraint,
-];
 const repository = [
-    UserRepository,
-    DevicesRepository,
-    UsersQueryRepository,
-    DevicesQueryRepository,
-    LocalStrategy,
     BlogRepository,
     BlogQueryRepository,
     PostsQueryRepository,
     PostRepository,
     CommentRepository,
     CommentsQueryRepository,
+    UserRepository,
 ];
 const useCases = [
     CreateBlogUseCase,
@@ -82,20 +74,10 @@ const useCases = [
     UpdatePostUseCase,
     AddLikesByPostUseCase,
     DeletePostUseCase,
-    CreateUserUseCase,
-    DeleteUserUseCase,
-    CreateDeviceUseCase,
-    DeleteDeviceUseCase,
     CreateCommentUseCase,
     UpdateCommentUseCase,
     AddReactionUseCase,
     DeleteCommentUseCase,
-    RegistrationUserUseCase,
-    ConfirmEmailUseCase,
-    ResendingCodeUseCase,
-    PasswordRecoveryUseCase,
-    NewPasswordSetUseCase,
-    AuthLoginUseCase,
 ];
 
 @Module({
@@ -121,31 +103,11 @@ const useCases = [
             autoLoadEntities: true,
             synchronize: true,
         }),
-        UserModule,
+        AuthModule,
         // смотреть видео о переменных окружения
         //разнести на модули пока будет время
     ],
-    controllers: [
-        AppController,
-        UserController,
-        AuthController,
-        DelController,
-        DeviceController,
-        BlogSaController,
-        BlogController,
-        PostController,
-        CommentController,
-    ],
-    providers: [
-        AppService,
-        AuthService,
-        UserService,
-        DevicesService,
-        PostService,
-        ...adapters,
-        ...useCases,
-        ...constraints,
-        ...repository,
-    ],
+    controllers: [AppController, DelController, BlogSaController, BlogController, PostController, CommentController],
+    providers: [AppService, PostService, UserService, JwtAdapter, ...useCases, ...repository],
 })
 export class AppModule {}

@@ -29,15 +29,7 @@ export class UserController {
     @UseGuards(BasicAuthGuard)
     async getUsers(@Query() queryDto: UsersQueryType) {
         const pagination = getQueryUserPagination(queryDto);
-        const { sortBy, sortDirection, searchLoginTerm, searchEmailTerm, pageSize, pageNumber } = pagination;
-        const arr = await this.usersQueryRepository.getUsers(
-            sortBy,
-            sortDirection,
-            pageNumber,
-            pageSize,
-            searchLoginTerm,
-            searchEmailTerm,
-        );
+        const arr = await this.usersQueryRepository.getUsers(pagination);
         //SQL выбровка уже идет
         return arr;
     }

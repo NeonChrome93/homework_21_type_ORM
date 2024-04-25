@@ -16,7 +16,7 @@ import { DevicesQueryRepository } from '../../public/devices/repositories/device
 import { AuthService } from '../../public/auth/application/auth.service';
 import { AuthController } from '../../public/auth/api/auth.controller';
 import { DeviceController } from '../../public/devices/api/device.controller';
-import { CommandBus, CqrsModule } from '@nestjs/cqrs';
+import { CqrsModule } from '@nestjs/cqrs';
 import { CreateDeviceUseCase } from '../../public/devices/application/usecases/create-device.usecase';
 import { DeleteDeviceUseCase } from '../../public/devices/application/usecases/delete-device.usecase';
 import { RegistrationUserUseCase } from '../../public/auth/application/usecases/registration-user.usecase';
@@ -67,5 +67,6 @@ const useCases = [
         ...constraints,
     ],
     controllers: [UserController, AuthController, DeviceController],
+    exports: [],
 })
 export class AuthModule {}

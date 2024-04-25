@@ -6,7 +6,7 @@ import { DevicesService } from '../../devices/application/device.service';
 import { DevicesRepository } from '../../devices/repositories/device.repository';
 import { CommandBus } from '@nestjs/cqrs';
 import { UserRepository } from '../../../admin/users/repositories/user-repository';
-import { User } from '../../../admin/users/domain/db-model';
+import { User } from '../../../admin/users/domain/user.entity';
 
 @Injectable()
 export class AuthService {

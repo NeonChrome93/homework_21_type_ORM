@@ -9,7 +9,7 @@ import { DeviceId } from '../../../../infrastructure/decorators/get-device.decor
 import { CommandBus } from '@nestjs/cqrs';
 import { DeleteDeviceCommand } from '../application/usecases/delete-device.usecase';
 //import { DeviceViewModel } from './models/output/device-output.model';
-import { User } from '../../../admin/users/domain/db-model';
+import { User } from '../../../admin/users/domain/user.entity';
 import { DevicesQueryRepository } from '../repositories/device.query.repository';
 import { DevicesService } from '../application/device.service';
 import { DeviceViewModel } from './models/output/device-output.model';

@@ -2,7 +2,7 @@ import { UserCreateModelDto } from '../../api/models/input/user.input.model';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserViewModel } from '../../api/models/output/user.output.model';
 import bcrypt from 'bcrypt';
-import { UserDbModel } from '../../domain/db-model';
+import { UserDbModel } from '../../domain/user.entity';
 import { UserRepository } from '../../repositories/user-repository';
 
 export class CreateUserCommand {
@@ -31,6 +31,7 @@ export class CreateUserUseCase implements ICommandHandler<CreateUserCommand> {
         };
 
         const createdUserId = await this.usersRepository.createUser(newUser);
+        console.log('createdUserId', createdUserId);
         return {
             id: createdUserId,
             login: newUser.login,

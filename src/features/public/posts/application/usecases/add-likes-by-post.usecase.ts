@@ -1,7 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { REACTIONS_ENUM } from '../../../comments/api/models/output/comments.output.models';
 import { PostRepository } from '../../repositories/post.repository';
-import { UserRepository } from '../../../../admin/users/repositories/user-repository';
 
 export class AddLikesByPostCommand {
     constructor(
@@ -13,10 +12,7 @@ export class AddLikesByPostCommand {
 
 @CommandHandler(AddLikesByPostCommand)
 export class AddLikesByPostUseCase implements ICommandHandler<AddLikesByPostCommand> {
-    constructor(
-        private readonly postRepository: PostRepository,
-        private readonly usersRepository: UserRepository,
-    ) {}
+    constructor(private readonly postRepository: PostRepository) {}
 
     async execute(command: AddLikesByPostCommand): Promise<boolean> {
         console.log('commandDDDD', command);

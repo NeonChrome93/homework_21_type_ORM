@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
 import { EmailAdapter } from '../../adapters/email.adapter';
 import { UserRepository } from '../../../../admin/users/repositories/user-repository';
-import { User } from '../../../../admin/users/domain/db-model';
+import { User } from '../../../../admin/users/domain/user.entity';
 
 export class RegistrationUserCommand {
     constructor(public userCreateModel: UserCreateModelDto) {}

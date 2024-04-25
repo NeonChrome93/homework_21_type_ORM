@@ -7,14 +7,17 @@ import { Device } from '../domain/device.entity';
 export class DevicesQueryRepository {
     constructor(private dataSource: DataSource) {}
     async findAllUserDevices(userId: string): Promise<DeviceViewModel[]> {
-        const query = `
-            SELECT * FROM 
-            public.devices
-            WHERE "userId" = $1
-            `;
+        // const query = `
+        //     SELECT * FROM
+        //     public.devices
+        //     WHERE "userId" = $1
+        //     `;
 
-        const getDevices = await this.dataSource.query(query, [userId]);
+        // const getDevices = await this.dataSource.query(query, [userId]);
 
+        const getDevices = await this.dataSource.getRepository(Device).find({
+            where: { userId },
+        });
         return getDevices.map(item => {
             return { ip: item.ip, title: item.title, lastActiveDate: item.lastActiveDate, deviceId: item.deviceId };
         });

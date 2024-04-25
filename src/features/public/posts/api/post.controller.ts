@@ -26,7 +26,7 @@ import { getQueryPagination } from '../../../../utils/pagination';
 import { BasicAuthGuard } from '../../../../infrastructure/guards/basic-auth.guard';
 import { CommentsQueryRepository } from '../../comments/repositories/comment.query.repository';
 import { UpdateCommentDto } from '../../comments/api/models/input/comment.input.model';
-import { User } from '../../../admin/users/domain/db-model';
+import { User } from '../../../admin/users/domain/user.entity';
 import { CreateCommentCommand } from '../../comments/application/usecases/create-comment.usecase';
 
 @Controller('posts')

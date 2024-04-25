@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Device } from '../../../public/devices/domain/device.entity';
 
 export type UserDbModel = {
     login: string;
@@ -34,4 +35,7 @@ export class User {
     passwordRecoveryCode: string | null;
     @Column({ default: null })
     expirationDateOfRecoveryCode: Date | null;
+
+    @OneToMany(() => Device, device => device.user)
+    devices: Device[];
 }

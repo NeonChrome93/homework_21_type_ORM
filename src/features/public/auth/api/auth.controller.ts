@@ -29,7 +29,7 @@ import { ResendingCodeCommand } from '../application/usecases/resending-code.use
 import { ConfirmEmailCommand } from '../application/usecases/confirm-email.usecase';
 import { AuthLoginCommand } from '../application/usecases/auth-login.usecase';
 import { BearerAuthGuard } from '../../../../infrastructure/guards/user.guard';
-import { User } from '../../../admin/users/domain/db-model';
+import { User } from '../../../admin/users/domain/user.entity';
 import { UserRepository } from '../../../admin/users/repositories/user-repository';
 import { UserAll } from '../../../../infrastructure/decorators/get-user.decorator';
 import { DevicesRepository } from '../../devices/repositories/device.repository';

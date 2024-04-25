@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Injectable } from '@nestjs/common';
-import { User } from '../../../admin/users/domain/db-model';
+import { User } from '../../../admin/users/domain/user.entity';
 
 @Injectable()
 export class JwtAdapter {

@@ -82,12 +82,12 @@ const useCases = [
 
 @Module({
     imports: [
-        // ThrottlerModule.forRoot([
-        //     {
-        //         ttl: 10000,
-        //         limit: 5,
-        //     },
-        // ]),
+        ThrottlerModule.forRoot([
+            {
+                ttl: 10000,
+                limit: 5,
+            },
+        ]),
 
         ConfigModule.forRoot({ isGlobal: true }),
         CqrsModule,

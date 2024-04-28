@@ -58,7 +58,7 @@ export class AuthController {
     }
 
     @Post('/login') //отдельный юз кейс на каждый запрос
-    @UseGuards(LocalAuthGuard, ThrottlerGuard) //ThrottlerGuard
+    @UseGuards(ThrottlerGuard, LocalAuthGuard) //ThrottlerGuard
     @HttpCode(200)
     //@Throttle({default: {ttl: 10000, limit: 5}})
     async authLogin(

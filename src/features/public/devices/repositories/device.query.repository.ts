@@ -24,14 +24,15 @@ export class DevicesQueryRepository {
     }
 
     async findDevice(deviceId: string): Promise<Device | null> {
-        const query = `
-            SELECT * FROM 
-            public.devices
-            WHERE "deviceId" = $1
-            `;
+        // const query = `
+        //     SELECT * FROM
+        //     public.device
+        //     WHERE "deviceId" = $1
+        //     `;
 
-        const getDevices = await this.dataSource.query(query, [deviceId]);
-        console.log('getDevices', getDevices);
-        return getDevices[0] || null;
+        const getDevices = await this.dataSource.getRepository(Device).findOne({
+            where: { deviceId },
+        });
+        return getDevices || null;
     }
 }

@@ -16,19 +16,20 @@ export class BlogRepository {
     }
 
     async createBlog(newBlog: Blog): Promise<BlogsViewType> {
-        const query = `INSERT INTO public.blogs(
-                        name, description, "websiteUrl", "createdAt", "isMembership")
-                       VALUES ($1, $2, $3, $4, $5)
-                       returning id;`;
-
-        const blog = await this.dataSource.query(query, [
-            newBlog.name,
-            newBlog.description,
-            newBlog.websiteUrl,
-            newBlog.createdAt,
-            newBlog.isMembership,
-        ]);
-        const blogsView: BlogsViewType = { ...newBlog, id: blog[0].id };
+        // const query = `INSERT INTO public.blogs(
+        //                 name, description, "websiteUrl", "createdAt", "isMembership")
+        //                VALUES ($1, $2, $3, $4, $5)
+        //                returning id;`;
+        //
+        // const blog = await this.dataSource.query(query, [
+        //     newBlog.name,
+        //     newBlog.description,
+        //     newBlog.websiteUrl,
+        //     newBlog.createdAt,
+        //     newBlog.isMembership,
+        // ]);
+        const blog = await Blog.createInMemo(newBlog.name, newBlog.description, newBlog.websiteUrl);
+        const blogsView: BlogsViewType = { ...blog, id: blog.id } as BlogsViewType;
         return blogsView;
     }
 

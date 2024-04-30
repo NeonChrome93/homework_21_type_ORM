@@ -39,6 +39,7 @@ import { UpdateCommentUseCase } from './features/public/comments/application/use
 import { AddReactionUseCase } from './features/public/comments/application/usecases/add-reaction.usecase';
 import { DeleteCommentUseCase } from './features/public/comments/application/usecases/delete-comment.usecase';
 import { AuthModule } from './features/admin/users/authModule';
+import { Blog } from './features/admin/blogs/domain/blog.entity';
 
 const repository = [
     BlogRepository,
@@ -84,6 +85,7 @@ export const options: TypeOrmModuleOptions = {
         ]),
         TypeOrmModule.forRoot(options),
         ConfigModule.forRoot({ isGlobal: true }),
+        TypeOrmModule.forFeature([Blog]),
         CqrsModule,
 
         PassportModule,

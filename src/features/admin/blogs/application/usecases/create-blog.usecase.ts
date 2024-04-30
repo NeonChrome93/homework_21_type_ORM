@@ -12,13 +12,12 @@ export class CreateBlogCommand {
 export class CreateBlogUseCase implements ICommandHandler<CreateBlogCommand> {
     constructor(private readonly blogRepository: BlogRepository) {}
     async execute(command: CreateBlogCommand): Promise<BlogsViewType> {
-        const newBlog: Blog = new Blog(
-            command.blogDto.name,
-            command.blogDto.description,
-            command.blogDto.websiteUrl,
-            false,
-        );
+        // const newBlog: Blog = new Blog();
+        // command.blogDto.name,
+        // command.blogDto.description,
+        // command.blogDto.websiteUrl,
+        // false,
 
-        return this.blogRepository.createBlog(newBlog);
+        return this.blogRepository.createBlog(command.blogDto as Blog);
     }
 }

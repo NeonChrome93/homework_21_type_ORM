@@ -67,6 +67,6 @@ const useCases = [
         ...constraints,
     ],
     controllers: [UserController, AuthController, DeviceController],
-    exports: [],
+    exports: [UserService, JwtAdapter],
 })
 export class AuthModule {}

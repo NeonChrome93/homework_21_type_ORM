@@ -38,30 +38,11 @@ import { CommentController } from './features/public/comments/api/comment.contro
 import { UpdateCommentUseCase } from './features/public/comments/application/usecases/update-comment.usecase';
 import { AddReactionUseCase } from './features/public/comments/application/usecases/add-reaction.usecase';
 import { DeleteCommentUseCase } from './features/public/comments/application/usecases/delete-comment.usecase';
-import { AuthModule } from './features/admin/users/authModule';
+import { AuthModule } from './features/admin/users/auth.module';
 import { Blog } from './features/admin/blogs/domain/blog.entity';
-
-const repository = [
-    BlogRepository,
-    BlogQueryRepository,
-    PostsQueryRepository,
-    PostRepository,
-    CommentRepository,
-    CommentsQueryRepository,
-    UserRepository,
-];
-const useCases = [
-    CreateBlogUseCase,
-    DeleteBlogUseCase,
-    UpdateBlogUseCase,
-    UpdatePostUseCase,
-    AddLikesByPostUseCase,
-    DeletePostUseCase,
-    CreateCommentUseCase,
-    UpdateCommentUseCase,
-    AddReactionUseCase,
-    DeleteCommentUseCase,
-];
+import { Post } from './features/public/posts/domain/post.entity';
+import { PostModule } from './features/public/posts/post.module';
+import { BlogModule } from './features/admin/blogs/blog.module';
 
 export const options: TypeOrmModuleOptions = {
     type: 'postgres',
@@ -85,15 +66,19 @@ export const options: TypeOrmModuleOptions = {
         ]),
         TypeOrmModule.forRoot(options),
         ConfigModule.forRoot({ isGlobal: true }),
-        TypeOrmModule.forFeature([Blog]),
+
         CqrsModule,
 
         PassportModule,
         AuthModule,
+        PostModule,
+        BlogModule,
+        CqrsModule,
+
         // смотреть видео о переменных окружения
         //разнести на модули пока будет время
     ],
-    controllers: [AppController, DelController, BlogSaController, BlogController, PostController, CommentController],
-    providers: [AppService, PostService, UserService, JwtAdapter, ...useCases, ...repository],
+    controllers: [AppController, DelController],
+    providers: [AppService],
 })
 export class AppModule {}

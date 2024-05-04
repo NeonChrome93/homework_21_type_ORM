@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Post } from '../../../public/posts/domain/post.entity';
 
 export type BlogDbType = {
     id: string;
@@ -36,4 +37,7 @@ export class Blog extends BaseEntity {
         console.log(blog);
         return blog;
     }
+
+    @OneToMany(() => Post, post => post.blog)
+    posts: Post[];
 }

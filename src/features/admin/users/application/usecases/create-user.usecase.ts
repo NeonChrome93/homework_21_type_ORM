@@ -31,7 +31,7 @@ export class CreateUserUseCase implements ICommandHandler<CreateUserCommand> {
         };
 
         const createdUserId = await this.usersRepository.createUser(newUser);
-        console.log('createdUserId', createdUserId);
+
         return {
             id: createdUserId,
             login: newUser.login,

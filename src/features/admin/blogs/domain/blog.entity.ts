@@ -14,7 +14,7 @@ export type BlogDbType = {
 export class Blog extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
-    @Column()
+    @Column({ collation: 'C' })
     name: string;
     @Column()
     description: string;
@@ -32,9 +32,9 @@ export class Blog extends BaseEntity {
         blog.websiteUrl = websiteUrl;
         blog.createdAt = new Date();
         blog.isMembership = isMembership;
-        console.log(blog);
+
         await this.save(blog);
-        console.log(blog);
+
         return blog;
     }
 

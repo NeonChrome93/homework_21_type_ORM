@@ -12,7 +12,7 @@ export class DelController {
         await this.dataSource.query(`DELETE FROM public.device CASCADE`);
         // await this.dataSource.query(`DELETE FROM public.comments CASCADE`);
         await this.dataSource.query(`DELETE FROM public.user CASCADE`);
-        // await this.dataSource.query(`DELETE FROM public.posts CASCADE`);
-        // await this.dataSource.query(`DELETE FROM public.blogs CASCADE`);
+        await this.dataSource.query(`DELETE FROM public.post CASCADE`);
+        await this.dataSource.query(`DELETE FROM public.blog CASCADE`);
     }
 }

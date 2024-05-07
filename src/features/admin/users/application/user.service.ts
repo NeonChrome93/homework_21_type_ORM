@@ -48,7 +48,7 @@ export class UserService {
 
     async checkCredentials(loginOrEmail: string, password: string): Promise<User | null> {
         const user = await this.usersRepository.findByLoginOrEmail(loginOrEmail);
-        //console.log('user', user);
+
         if (!user) return null;
         try {
             const passwordHash = await bcrypt.compare(password, user.passwordHash);

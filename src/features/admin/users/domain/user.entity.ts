@@ -17,10 +17,14 @@ export type UserDbModel = {
 export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string;
-    @Column()
+    @Column({ collation: 'C' })
     login: string;
     @Column()
     email: string;
+    @Column()
+    desc: string;
+    @Column()
+    email2: string;
     @Column({ default: null })
     passwordSalt: string;
     @Column()

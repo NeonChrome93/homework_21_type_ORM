@@ -2,45 +2,12 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { UserRepository } from './features/admin/users/repositories/user-repository';
-
 import { CqrsModule } from '@nestjs/cqrs';
-
 import { PassportModule } from '@nestjs/passport';
-
-import { UserService } from './features/admin/users/application/user.service';
-import { JwtAdapter } from './features/public/auth/adapters/jwt.adapter';
-
 import { ThrottlerModule } from '@nestjs/throttler';
-
 import { DelController } from './testing-all-data/testing.controller';
-
 import { ConfigModule } from '@nestjs/config';
-
-import { BlogSaController } from './features/admin/blogs/api/blog.sa.controller';
-import { CreateBlogUseCase } from './features/admin/blogs/application/usecases/create-blog.usecase';
-import { BlogRepository } from './features/admin/blogs/repositories/blog.repository';
-import { DeleteBlogUseCase } from './features/admin/blogs/application/usecases/delete-blog-usecase';
-import { UpdateBlogUseCase } from './features/admin/blogs/application/usecases/update.blog.usecase';
-import { BlogQueryRepository } from './features/admin/blogs/repositories/blog.query.repository';
-import { BlogController } from './features/public/blogs/api/blog.controller';
-import { PostController } from './features/public/posts/api/post.controller';
-import { PostService } from './features/public/posts/application/post.service';
-import { PostRepository } from './features/public/posts/repositories/post.repository';
-import { PostsQueryRepository } from './features/public/posts/repositories/post.query.repository';
-import { UpdatePostUseCase } from './features/public/posts/application/usecases/update-post.usecase';
-import { AddLikesByPostUseCase } from './features/public/posts/application/usecases/add-likes-by-post.usecase';
-import { DeletePostUseCase } from './features/public/posts/application/usecases/delete-post.usecase';
-import { CreateCommentUseCase } from './features/public/comments/application/usecases/create-comment.usecase';
-import { CommentRepository } from './features/public/comments/repositories/comment.repository';
-import { CommentsQueryRepository } from './features/public/comments/repositories/comment.query.repository';
-import { CommentController } from './features/public/comments/api/comment.controller';
-import { UpdateCommentUseCase } from './features/public/comments/application/usecases/update-comment.usecase';
-import { AddReactionUseCase } from './features/public/comments/application/usecases/add-reaction.usecase';
-import { DeleteCommentUseCase } from './features/public/comments/application/usecases/delete-comment.usecase';
 import { AuthModule } from './features/admin/users/auth.module';
-import { Blog } from './features/admin/blogs/domain/blog.entity';
-import { Post } from './features/public/posts/domain/post.entity';
 import { PostModule } from './features/public/posts/post.module';
 import { BlogModule } from './features/admin/blogs/blog.module';
 
@@ -53,7 +20,8 @@ export const options: TypeOrmModuleOptions = {
     database: 'blogs-posts-ORM',
     entities: [],
     autoLoadEntities: true,
-    synchronize: true,
+    logging: ['query'],
+    synchronize: false,
 };
 
 @Module({

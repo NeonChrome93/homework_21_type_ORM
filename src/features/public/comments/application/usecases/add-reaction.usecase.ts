@@ -23,7 +23,7 @@ export class AddReactionUseCase implements ICommandHandler<AddReactionCommand> {
         if (!comment) return false;
 
         const reaction = await this.commentRepository.readLikesCommentId(command.commentId, command.userId);
-        console.log(reaction);
+
         if (!reaction) {
             await this.commentRepository.createLikeByComment({
                 userId: command.userId.toString(),

@@ -8,12 +8,15 @@ import { AddReactionUseCase } from './application/usecases/add-reaction.usecase'
 import { DeleteCommentUseCase } from './application/usecases/delete-comment.usecase';
 import { AuthModule } from '../../admin/users/auth.module';
 import { CqrsModule } from '@nestjs/cqrs';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Comment } from './domain/comment.entity';
+import { Comments_likes } from './domain/comments.likes.entity';
 
 const repository = [CommentRepository, CommentsQueryRepository];
 const useCases = [CreateCommentUseCase, UpdateCommentUseCase, AddReactionUseCase, DeleteCommentUseCase];
 
 @Module({
-    imports: [CqrsModule, AuthModule],
+    imports: [CqrsModule, AuthModule, TypeOrmModule.forFeature([Comment, Comments_likes])],
     providers: [...repository, ...useCases],
     controllers: [CommentController],
     exports: [CommentsQueryRepository],

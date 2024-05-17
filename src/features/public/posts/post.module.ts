@@ -16,13 +16,14 @@ import { CreatePostUseCase } from './application/usecases/create-post.usecase';
 import { BlogModule } from '../../admin/blogs/blog.module';
 import { AuthModule } from '../../admin/users/auth.module';
 import { CommentsModule } from '../comments/comments.module';
+import { Post_likes } from './domain/post.lilkes.entity';
 
 const repository = [PostsQueryRepository, PostRepository, BlogRepository];
 
 const useCases = [CreatePostUseCase, UpdatePostUseCase, AddLikesByPostUseCase, DeletePostUseCase];
 
 @Module({
-    imports: [CqrsModule, AuthModule, CommentsModule, TypeOrmModule.forFeature([Post])],
+    imports: [CqrsModule, AuthModule, CommentsModule, TypeOrmModule.forFeature([Post, Post_likes])],
     providers: [PostService, ...useCases, ...repository],
     controllers: [PostController],
     exports: [PostService, PostRepository],

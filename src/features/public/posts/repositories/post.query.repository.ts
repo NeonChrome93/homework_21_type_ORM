@@ -10,7 +10,7 @@ import { PostMapperImp } from '../../../../utils/mappers/post.mapper';
 export class PostsQueryRepository {
     constructor(
         @InjectRepository(Post) public postRepository: Repository<Post>,
-        private readonly dataSource: DataSource,
+        //private readonly dataSource: DataSource,
     ) {}
 
     async readPosts(
@@ -34,12 +34,11 @@ export class PostsQueryRepository {
         // const queryCount = `SELECT count(id)
         //                           FROM public.posts`;
 
-        const totalPostCount = await this.dataSource
-            .getRepository(Post)
-            .createQueryBuilder('p')
-            .select('COUNT(p.id)', 'count')
-            .getRawOne();
-        const totalCount = parseInt(totalPostCount.count);
+        const totalPostCount = await this.postRepository.count();
+        // .createQueryBuilder('p')
+        // .select('COUNT(p.id)', 'count')
+        // .getRawOne();
+        const totalCount = totalPostCount;
 
         const mapper = new PostMapperImp();
         const items: PostViewType[] = posts.map((post: postDbType) => mapper.mapPostDbToPostView(post));
@@ -110,7 +109,7 @@ export class PostsQueryRepository {
         //         };
     }
     async readPostId(postId: string, userId?: string | null): Promise<PostViewType | null> {
-        const post = await this.dataSource.getRepository(Post).findOne({ where: { id: postId } });
+        const post = await this.postRepository.findOne({ where: { id: postId } });
 
         if (post) {
             const postView: PostViewType = {

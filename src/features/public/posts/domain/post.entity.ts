@@ -1,6 +1,8 @@
 import { REACTIONS_ENUM } from '../../comments/api/models/output/comments.output.models';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Blog } from '../../../admin/blogs/domain/blog.entity';
+import { Post_likes } from './post.lilkes.entity';
+import { Comment } from '../../comments/domain/comment.entity';
 
 export type postDbType = {
     id: string;
@@ -34,6 +36,12 @@ export class Post {
     @ManyToOne(() => Blog, blog => blog.posts)
     @JoinColumn({ name: 'blogId' })
     blog: Blog;
+
+    @OneToMany(() => Post_likes, likes => likes.post)
+    likes: Post_likes[];
+
+    @OneToMany(() => Comment, comment => comment)
+    comment: Comment[];
 }
 
 export class StatusType {

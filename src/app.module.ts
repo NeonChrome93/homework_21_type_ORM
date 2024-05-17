@@ -27,7 +27,7 @@ export const options: TypeOrmModuleOptions = {
     entities: [],
     autoLoadEntities: true,
     logging: ['query'],
-    synchronize: false,
+    synchronize: true,
 };
 
 console.log(process.env.POSTGRES_USER);
@@ -48,7 +48,7 @@ console.log(process.env.POSTGRES_USER);
             imports: [ConfigModule],
             useFactory: async (config: ConfigService<ConfigurationType>) => {
                 const environmentSettings = config.get('environmentSettings', { infer: true });
-                console.log(environmentSettings);
+                console.log('ENV', environmentSettings);
 
                 const database = environmentSettings.isTesting
                     ? config.get('databaseSettings.POSTGRES_CONNECTION_URI_FOR_TESTS', { infer: true })
@@ -60,7 +60,7 @@ console.log(process.env.POSTGRES_USER);
                     type: 'postgres',
                     entities: [],
                     autoLoadEntities: true,
-                    logging: ['query'],
+                    ...(true ? { logging: ['query'] } : {}),
                     synchronize: false,
                 };
             },

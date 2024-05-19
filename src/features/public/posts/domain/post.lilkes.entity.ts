@@ -1,11 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { REACTIONS_ENUM } from '../../comments/api/models/output/comments.output.models';
 import { Post } from './post.entity';
 import { User } from '../../../admin/users/domain/user.entity';
 
 @Entity()
 export class Post_likes {
-    @PrimaryColumn('uuid')
+    @PrimaryGeneratedColumn('uuid')
     id: string;
     @Column()
     userId: string;

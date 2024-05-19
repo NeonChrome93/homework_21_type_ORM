@@ -1,5 +1,5 @@
 import { REACTIONS_ENUM } from '../api/models/output/comments.output.models';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Comments_likes } from './comments.likes.entity';
 import { Post } from '../../posts/domain/post.entity';
 
@@ -11,11 +11,13 @@ export type CommentsDBType = {
 };
 
 @Entity()
-export class Comment {
-    @PrimaryColumn('uuid')
+export class Comments {
+    @PrimaryGeneratedColumn('uuid')
     id: string;
     @Column()
     postId: string;
+    @Column()
+    content: string;
     @Column()
     userId: string;
     @Column()

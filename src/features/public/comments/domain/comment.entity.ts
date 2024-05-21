@@ -2,6 +2,7 @@ import { REACTIONS_ENUM } from '../api/models/output/comments.output.models';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Comments_likes } from './comments.likes.entity';
 import { Post } from '../../posts/domain/post.entity';
+import { User } from '../../../admin/users/domain/user.entity';
 
 export type CommentsDBType = {
     postId: string;
@@ -22,6 +23,10 @@ export class Comments {
     userId: string;
     @Column()
     createdAt: Date;
+
+    @ManyToOne(() => User, user => user.comment)
+    @JoinColumn({ name: 'userId' })
+    user: User;
 
     @OneToMany(() => Comments_likes, likes => likes.comment)
     likes: Comments_likes[];

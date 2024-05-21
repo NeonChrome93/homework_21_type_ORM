@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn
 import { Device } from '../../../public/devices/domain/device.entity';
 import { Post_likes } from '../../../public/posts/domain/post.lilkes.entity';
 import { Comments_likes } from '../../../public/comments/domain/comments.likes.entity';
+import { Comments } from '../../../public/comments/domain/comment.entity';
 
 export type UserDbModel = {
     login: string;
@@ -23,10 +24,6 @@ export class User {
     login: string;
     @Column()
     email: string;
-    @Column()
-    desc: string;
-    @Column()
-    email2: string;
     @Column({ default: null })
     passwordSalt: string;
     @Column()
@@ -50,4 +47,7 @@ export class User {
 
     @OneToMany(() => Device, device => device.user)
     devices: Device[];
+
+    @OneToMany(() => Comments, comment => comment.user)
+    comment: Comments[];
 }

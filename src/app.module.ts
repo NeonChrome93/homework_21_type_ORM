@@ -38,12 +38,12 @@ console.log(process.env.POSTGRES_USER);
             isGlobal: true,
             load: [config],
         }),
-        ThrottlerModule.forRoot([
-            {
-                ttl: 10000,
-                limit: 5,
-            },
-        ]),
+        // ThrottlerModule.forRoot([
+        //     {
+        //         ttl: 10000,
+        //         limit: 5,
+        //     },
+        // ]),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             useFactory: async (config: ConfigService<ConfigurationType>) => {
@@ -60,7 +60,7 @@ console.log(process.env.POSTGRES_USER);
                     type: 'postgres',
                     entities: [],
                     autoLoadEntities: true,
-                    ...(true ? { logging: ['query'] } : {}),
+                    //...(true ? { logging: ['query'] } : {}),
                     synchronize: false,
                 };
             },

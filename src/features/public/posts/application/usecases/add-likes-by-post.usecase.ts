@@ -36,6 +36,10 @@ export class AddLikesByPostUseCase implements ICommandHandler<AddLikesByPostComm
             //     status: command.status,
             // });
         } else {
+            // reactions.status = command.status;
+            // todo in repo
+            //reaction.save()
+
             await this.postRepository.updatePostReaction({
                 userId: command.userId.toString(),
                 createdAt: new Date().toISOString(),

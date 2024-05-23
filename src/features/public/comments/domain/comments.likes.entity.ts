@@ -20,9 +20,9 @@ export class Comments_likes {
     @Column()
     commentId: string;
 
-    @OneToOne(() => User, user => user.postLikes)
+    @ManyToOne(() => User, user => user.postLikes)
     @JoinColumn({ name: 'userId' })
-    public user = User;
+    user: User;
 
     @ManyToOne(() => Comments, comment => comment.likes)
     @JoinColumn({ name: 'commentId' })

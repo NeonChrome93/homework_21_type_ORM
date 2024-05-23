@@ -33,6 +33,7 @@ export class AddReactionUseCase implements ICommandHandler<AddReactionCommand> {
             });
         } else {
             await this.commentRepository.updateCommentReactions({
+                id: reaction.id,
                 userId: command.userId.toString(),
                 status: command.status,
                 createdAt: new Date().toISOString(),

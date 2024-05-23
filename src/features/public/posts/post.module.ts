@@ -13,17 +13,17 @@ import { BlogRepository } from '../../admin/blogs/repositories/blog.repository';
 import { PostsQueryRepository } from './repositories/post.query.repository';
 import { PostRepository } from './repositories/post.repository';
 import { CreatePostUseCase } from './application/usecases/create-post.usecase';
-import { BlogModule } from '../../admin/blogs/blog.module';
 import { AuthModule } from '../../admin/users/auth.module';
 import { CommentsModule } from '../comments/comments.module';
 import { Post_likes } from './domain/post.lilkes.entity';
+import { Blog } from '../../admin/blogs/domain/blog.entity';
 
 const repository = [PostsQueryRepository, PostRepository, BlogRepository];
 
 const useCases = [CreatePostUseCase, UpdatePostUseCase, AddLikesByPostUseCase, DeletePostUseCase];
 
 @Module({
-    imports: [CqrsModule, AuthModule, CommentsModule, TypeOrmModule.forFeature([Post, Post_likes])],
+    imports: [CqrsModule, AuthModule, CommentsModule, TypeOrmModule.forFeature([Post, Post_likes, Blog])],
     providers: [PostService, ...useCases, ...repository],
     controllers: [PostController],
     exports: [PostService, PostRepository],

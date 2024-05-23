@@ -11,8 +11,6 @@ import { BlogController } from '../../public/blogs/api/blog.controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { AuthModule } from '../users/auth.module';
 import { PostModule } from '../../public/posts/post.module';
-import { PostService } from '../../public/posts/application/post.service';
-import { PostRepository } from '../../public/posts/repositories/post.repository';
 
 const useCases = [CreateBlogUseCase, DeleteBlogUseCase, UpdateBlogUseCase];
 @Module({

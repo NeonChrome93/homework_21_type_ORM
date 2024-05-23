@@ -58,7 +58,7 @@ export class AuthController {
     }
 
     @Post('/login') //отдельный юз кейс на каждый запрос
-    @UseGuards(ThrottlerGuard, LocalAuthGuard) //ThrottlerGuard
+    @UseGuards(LocalAuthGuard) //ThrottlerGuard
     @HttpCode(200)
     //@Throttle({default: {ttl: 10000, limit: 5}})
     async authLogin(
@@ -118,7 +118,7 @@ export class AuthController {
 
     @Post('/registration')
     //@Throttle({default: {ttl: 10000, limit: 5}})
-    @UseGuards(ThrottlerGuard)
+    //@UseGuards(ThrottlerGuard)
     @HttpCode(204)
     async registrationUser(@Body() dto: UserCreateModelDto) {
         await this.commandBus.execute(
@@ -134,7 +134,7 @@ export class AuthController {
 
     @Post('/registration-confirmation')
     //@Throttle({default: {ttl: 10000, limit: 5}})
-    @UseGuards(ThrottlerGuard)
+    //@UseGuards(ThrottlerGuard)
     @HttpCode(204)
     async confirmRegistration(@Body() codeDto: CodeDto) {
         const isConfirmed = await this.commandBus.execute(new ConfirmEmailCommand(codeDto.code));
@@ -167,7 +167,7 @@ export class AuthController {
     @Post('/registration-email-resending')
     @HttpCode(204)
     //@Throttle({default: {ttl: 10000, limit: 5}})
-    @UseGuards(ThrottlerGuard)
+    //@UseGuards(ThrottlerGuard)
     async receivedCode(@Body() emailDto: EmailDto) {
         const receivedCode = await this.commandBus.execute(new ResendingCodeCommand(emailDto.email));
         if (!receivedCode) {

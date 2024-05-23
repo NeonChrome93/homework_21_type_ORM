@@ -39,11 +39,11 @@ export class User {
     @Column({ default: null })
     expirationDateOfRecoveryCode: Date | null;
 
-    @OneToOne(() => Post_likes, likes => likes.user)
-    public postLikes = Post_likes;
+    @OneToMany(() => Post_likes, likes => likes.user)
+    postLikes: Post_likes[];
 
-    @OneToOne(() => Comments_likes, likes => likes.user)
-    public commentsLikes = Comments_likes;
+    @OneToMany(() => Comments_likes, likes => likes.user)
+    commentsLikes: Comments_likes[];
 
     @OneToMany(() => Device, device => device.user)
     devices: Device[];

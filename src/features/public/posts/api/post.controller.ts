@@ -110,6 +110,7 @@ export class PostController {
         if (!post) throw new NotFoundException();
 
         const userId = user!.id.toString();
+        console.log('UserIDDD', userId);
         const userLogin = user!.login;
         const newComment = await this.commandBus.execute(
             new CreateCommentCommand(post.id.toString(), userId, userLogin, dto.content),

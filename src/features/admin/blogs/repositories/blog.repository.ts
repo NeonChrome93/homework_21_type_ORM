@@ -1,16 +1,20 @@
 import { UpdateBlogTypeDto } from '../api/models/input/blog.input.model';
 import { BlogsViewType } from '../api/models/output/blog.output.model';
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { Blog, BlogDbType } from '../domain/blog.entity';
 import { Post } from '../../../public/posts/domain/post.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class BlogRepository {
-    constructor(private dataSource: DataSource) {}
+    constructor(
+        private dataSource: DataSource,
+        @InjectRepository(Blog) public blogRepository: Repository<Blog>,
+    ) {}
 
     async readBlogsId(id: string): Promise<BlogDbType | null> {
-        const blog = await this.dataSource.getRepository(Blog).findOne({ where: { id: id } });
+        const blog = await this.blogRepository.findOne({ where: { id: id } });
         return blog;
     }
 

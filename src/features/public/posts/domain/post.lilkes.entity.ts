@@ -20,9 +20,9 @@ export class Post_likes {
     @Column()
     postId: string;
 
-    @OneToOne(() => User, user => user.postLikes)
+    @ManyToOne(() => User, user => user.postLikes)
     @JoinColumn({ name: 'userId' })
-    public user = User;
+    user: User;
 
     @ManyToOne(() => Post, post => post.likes)
     @JoinColumn({ name: 'postId' })

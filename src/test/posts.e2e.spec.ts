@@ -75,26 +75,30 @@ describe('Post API', () => {
         await request(app.getHttpServer()).get(`/posts/${post.body.id}`).expect(200);
     });
 
-    it('Update post', async () => {
+    it('Update post by blog id', async () => {
+        const blog = await request(app.getHttpServer()).post('/sa/blogs').set(headers).send(createBlog).expect(201);
         const post = await request(app.getHttpServer())
             .post('/posts')
             .set(headers)
             .send({ ...createPost })
             .expect(201);
-        const updatedPost = await request(app.getHttpServer())
-            .put(`/posts/${post.body.id}`)
+        await request(app.getHttpServer())
+            .put(`/sa/blogs/${blog.body.id}/posts/${post.body.id}`)
             .set(headers)
             .send(updatePost)
             .expect(204);
     });
 
-    it('Delete post with id', async () => {
-        const blog = await request(app.getHttpServer()).post('/blogs').set(headers).send(createBlog).expect(201);
+    it('Delete post by blog id', async () => {
+        const blog = await request(app.getHttpServer()).post('/sa/blogs').set(headers).send(createBlog).expect(201);
         const post = await request(app.getHttpServer())
             .post(`/blogs/${blog.body.id}/posts`)
             .set(headers)
             .send({ ...createPost });
-        await request(app.getHttpServer()).delete(`/posts/${post.body.id}`).set(headers).expect(204);
+        await request(app.getHttpServer())
+            .delete(`/sa/blogs/${blog.body.id}/posts/${post.body.id}`)
+            .set(headers)
+            .expect(204);
         await request(app.getHttpServer()).get(`/posts/${post.body.id}`).expect(404);
     });
 });

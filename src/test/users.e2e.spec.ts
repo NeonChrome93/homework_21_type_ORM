@@ -43,19 +43,19 @@ describe('Users API', () => {
         await request(app.getHttpServer())
             .get('/sa/users')
             .set(headers)
-            .expect(200, { pagesCount: 0, page: 1, pageSize: 10, totalCount: 0, items: [] });
+            .expect(200, { pagesCount: 1, page: 1, pageSize: 10, totalCount: 0, items: [] });
     });
 
     it('Create User', async () => {
-        await request(app.getHttpServer()).post('/sa/users').set(headers).send(createUser).expect(201);
+        await request(app.getHttpServer()).post('/users').set(headers).send(createUser).expect(201);
     });
 
     it('Get User', async () => {
-        await request(app.getHttpServer()).get('/sa/users').set(headers).expect(200);
+        await request(app.getHttpServer()).get('/users').set(headers).expect(200);
     });
 
     it('Delete User ', async () => {
-        const user = await request(app.getHttpServer()).post('/sa/users').set(headers).send(createUser2);
-        await request(app.getHttpServer()).delete(`/sa/users/${user.body.id}`).set(headers).expect(204);
+        const user = await request(app.getHttpServer()).post('/users').set(headers).send(createUser2);
+        await request(app.getHttpServer()).delete(`/users/${user.body.id}`).set(headers).expect(204);
     });
 });

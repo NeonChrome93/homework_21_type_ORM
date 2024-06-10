@@ -5,7 +5,7 @@ import { PostViewType } from '../features/public/posts/api/models/output/post-ou
 import { agent as request } from 'supertest';
 
 let postId = '';
-const commentId = '';
+//const commentId = '';
 let post: PostViewType;
 
 const createBlog = {
@@ -77,6 +77,7 @@ describe('Post API', () => {
 
     it('Update post by blog id', async () => {
         const blog = await request(app.getHttpServer()).post('/sa/blogs').set(headers).send(createBlog).expect(201);
+        createPost.blogId = blog.body.id;
         const post = await request(app.getHttpServer())
             .post('/posts')
             .set(headers)
@@ -91,8 +92,9 @@ describe('Post API', () => {
 
     it('Delete post by blog id', async () => {
         const blog = await request(app.getHttpServer()).post('/sa/blogs').set(headers).send(createBlog).expect(201);
+        createPost.blogId = blog.body.id;
         const post = await request(app.getHttpServer())
-            .post(`/blogs/${blog.body.id}/posts`)
+            .post(`/sa/blogs/${blog.body.id}/posts`)
             .set(headers)
             .send({ ...createPost });
         await request(app.getHttpServer())

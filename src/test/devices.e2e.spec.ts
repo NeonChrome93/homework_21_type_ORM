@@ -1,9 +1,12 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import request from 'supertest';
 import { appSettings } from '../config/app.settings';
 import { AppModule } from '../app.module';
-import { DevicesRepository } from '../features/public/devices/repositories/device.repository';
+import { Device } from '../features/public/devices/domain/device.entity';
+import { JwtAdapter } from '../features/public/auth/adapters/jwt.adapter';
+import { agent as request } from 'supertest';
+import { createNewUserModel, createUser, unpackingToken } from './utils/utils';
+import { DevicesQueryRepository } from '../features/public/devices/repositories/device.query.repository';
 
 let deviceGlobal: Device | null = null;
 let token = '';
@@ -21,7 +24,7 @@ describe('Create device, delete device by id, delete all devices except the curr
         app = moduleFixture.createNestApplication();
         appSettings(app);
 
-        devicesRepository = moduleFixture.get<DevicesRepository>(DevicesRepository);
+        devicesRepository = moduleFixture.get<DevicesQueryRepository>(DevicesQueryRepository);
         jwtAdapter = moduleFixture.get<JwtAdapter>(JwtAdapter);
         await app.init();
     });
@@ -65,7 +68,7 @@ describe('Create device, delete device by id, delete all devices except the curr
         expect(device.title).toBe('Chrome');
     });
 
-    xit('Get devices', async () => {
+    it('Get devices', async () => {
         const res1 = await request(app.getHttpServer()).post('/auth/refresh-token').set('Cookie', token).expect(200);
         //console.log('accessToken', accessToken.body.accessToken)//новые куки
 
@@ -73,7 +76,7 @@ describe('Create device, delete device by id, delete all devices except the curr
         expect(response.body).toEqual(expect.arrayContaining([expect.objectContaining({ title: 'Chrome' })]));
     });
 
-    xit('Delete Device by id', async () => {
+    it('Delete Device by id', async () => {
         await request(app.getHttpServer())
             .delete(`/security/devices/${deviceGlobal?.deviceId}`)
             .set('Cookie', token)
@@ -147,7 +150,7 @@ describe('Create device, delete device by id, delete all devices except the curr
         });
 
         const refreshToken1 = loginDevice1.headers['set-cookie'];
-        const refreshToken2 = loginDevice2.headers['set-cookie'];
+        // const refreshToken2 = loginDevice2.headers['set-cookie'];
 
         await request(app.getHttpServer()).delete('/security/devices').set('Cookie', refreshToken1).expect(204);
         const response = await request(app.getHttpServer())

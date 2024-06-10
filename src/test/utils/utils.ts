@@ -1,9 +1,10 @@
-import request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../app.module';
 import { EmailAdapter } from '../../features/public/auth/adapters/email.adapter';
 import { appSettings } from '../../config/app.settings';
 import { agent as request } from 'supertest';
+import { INestApplication } from '@nestjs/common';
+import { UserViewModel } from '../../features/admin/users/api/models/output/user.output.model';
 
 const SendEmailMock = jest.fn();
 
@@ -38,7 +39,7 @@ export type UserCreationTestModel = {
 
 export async function createUser(app: INestApplication, model: UserCreationTestModel): Promise<UserViewModel> {
     const result = await request(app.getHttpServer())
-        .post('/users')
+        .post('/sa/users')
         .set(authBasicHeaders)
         .send({
             ...model,

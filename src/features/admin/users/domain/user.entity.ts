@@ -3,6 +3,7 @@ import { Device } from '../../../public/devices/domain/device.entity';
 import { Post_likes } from '../../../public/posts/domain/post.lilkes.entity';
 import { Comments_likes } from '../../../public/comments/domain/comments.likes.entity';
 import { Comments } from '../../../public/comments/domain/comment.entity';
+import bcrypt from 'bcrypt';
 
 export type UserDbModel = {
     login: string;
@@ -30,7 +31,7 @@ export class User {
     passwordHash: string;
     @Column()
     createdAt: Date;
-    @Column()
+    @Column({ nullable: true })
     confirmationCode: string;
     @Column()
     isConfirmed: boolean;
@@ -50,4 +51,33 @@ export class User {
 
     @OneToMany(() => Comments, comment => comment.user)
     comment: Comments[];
+
+    static async create({
+        email,
+        login,
+        password,
+        isConfirmed,
+    }: {
+        email: string;
+        password: string;
+        login: string;
+        isConfirmed: boolean;
+    }): Promise<User> {
+        const user = new User();
+        const passwordSalt = await bcrypt.genSalt(10);
+        //  const passwordHash = await this.generateHash(userCreateModel.password, passwordSalt)
+        const passwordHash = await bcrypt.hash(password, passwordSalt);
+
+        user.login = login;
+        user.email = email;
+        user.passwordHash = passwordHash;
+        user.passwordSalt = passwordSalt;
+        user.createdAt = new Date();
+        user.confirmationCode = isConfirmed ? null : '123';
+        user.isConfirmed = isConfirmed;
+        user.passwordRecoveryCode = null;
+        user.expirationDateOfRecoveryCode = null;
+
+        return user;
+    }
 }

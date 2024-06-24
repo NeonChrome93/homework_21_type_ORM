@@ -8,7 +8,7 @@ export class GameQuestionEntity {
     @Column()
     body: string;
 
-    @Column({ array: true, type: 'string' })
+    @Column({ array: true, type: 'text' })
     correctAnswers: string[];
 
     @Column()

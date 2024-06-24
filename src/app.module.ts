@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PassportModule } from '@nestjs/passport';
-import { ThrottlerModule } from '@nestjs/throttler';
 import { DelController } from './testing-all-data/testing.controller';
 import { AuthModule } from './features/admin/users/auth.module';
 import { PostModule } from './features/public/posts/post.module';
@@ -12,6 +11,7 @@ import { BlogModule } from './features/admin/blogs/blog.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config, ConfigurationType } from './config/configuration';
 import * as dotenv from 'dotenv';
+import { QuestionModule } from './features/admin/pairQuizGameQuestions/question.module';
 // import config from './config/configuration';
 
 dotenv.config();
@@ -61,7 +61,7 @@ console.log(process.env.POSTGRES_USER);
                     entities: [],
                     autoLoadEntities: true,
                     //...(true ? { logging: ['query'] } : {}),
-                    synchronize: false,
+                    synchronize: true,
                 };
             },
             inject: [ConfigService],
@@ -77,6 +77,7 @@ console.log(process.env.POSTGRES_USER);
         PostModule,
         BlogModule,
         CqrsModule,
+        QuestionModule,
 
         // смотреть видео о переменных окружения
         //разнести на модули пока будет время

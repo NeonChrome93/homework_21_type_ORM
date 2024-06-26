@@ -39,6 +39,7 @@ export class QuestionRepository {
             {
                 body: dto.body,
                 correctAnswers: dto.correctAnswers,
+                updatedAt: new Date(),
             },
         );
         if (!question) return false;

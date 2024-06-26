@@ -18,7 +18,7 @@ export class CreateQuestionUseCase implements ICommandHandler<CreateQuestionComm
             correctAnswers: command.dto.correctAnswers,
             published: false,
             createdAt: new Date(),
-            updatedAt: new Date(),
+            updatedAt: null,
         };
 
         const questionId = await this.questionRepository.createQuestion(newQuestion);
@@ -29,7 +29,7 @@ export class CreateQuestionUseCase implements ICommandHandler<CreateQuestionComm
             correctAnswers: questionId.correctAnswers,
             published: questionId.published,
             createdAt: questionId.createdAt.toISOString(),
-            updatedAt: questionId.updatedAt.toISOString(),
+            updatedAt: questionId.updatedAt ? questionId.updatedAt.toISOString() : null,
         };
     }
 }

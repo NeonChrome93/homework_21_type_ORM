@@ -7,6 +7,7 @@ export class DelController {
     @Delete('all-data')
     @HttpCode(204)
     async DeleteAllData() {
+        await this.dataSource.query(`DELETE FROM public.game_question_entity CASCADE`);
         await this.dataSource.query(`DELETE FROM public.comments_likes CASCADE`);
         await this.dataSource.query(`DELETE FROM public.post_likes CASCADE`);
         await this.dataSource.query(`DELETE FROM public.device CASCADE`);

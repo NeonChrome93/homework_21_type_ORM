@@ -42,7 +42,7 @@ export class QuestionQueryRepository {
                     correctAnswers: q.correctAnswers,
                     published: q.published,
                     createdAt: q.createdAt.toISOString(),
-                    updatedAt: q.updatedAt.toISOString(),
+                    updatedAt: q.updatedAt?.toISOString() ?? null,
                 }),
             ),
         };

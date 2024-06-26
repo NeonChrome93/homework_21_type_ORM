@@ -2,10 +2,13 @@ import { ArrayMaxSize, ArrayMinSize, ArrayNotEmpty, IsArray, IsBoolean, IsString
 
 export class CreateGameQuestionDto {
     @IsString()
+    @Length(10, 500)
     body: string;
 
     @IsArray()
     @ArrayNotEmpty()
+    @ArrayMinSize(1)
+    @ArrayMaxSize(6)
     @IsString({ each: true })
     correctAnswers: string[];
 }

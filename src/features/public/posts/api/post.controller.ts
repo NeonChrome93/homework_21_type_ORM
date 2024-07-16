@@ -59,7 +59,7 @@ export class PostController {
 
     @Post() //Not This
     @HttpCode(201)
-    @UseGuards(BasicAuthGuard)
+    //@UseGuards(BasicAuthGuard)
     async createPosts(@Body() postDto: createPostDto) {
         const newPost = await this.postService.createPost(postDto);
         return newPost;

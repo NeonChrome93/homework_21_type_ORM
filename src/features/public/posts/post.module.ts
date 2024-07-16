@@ -17,6 +17,7 @@ import { AuthModule } from '../../admin/users/auth.module';
 import { CommentsModule } from '../comments/comments.module';
 import { Post_likes } from './domain/post.lilkes.entity';
 import { Blog } from '../../admin/blogs/domain/blog.entity';
+import { IsBlogExistConstraint } from '../../../infrastructure/decorators/blog-exist.decorator';
 
 const repository = [PostsQueryRepository, PostRepository, BlogRepository];
 
@@ -24,7 +25,7 @@ const useCases = [CreatePostUseCase, UpdatePostUseCase, AddLikesByPostUseCase, D
 
 @Module({
     imports: [CqrsModule, AuthModule, CommentsModule, TypeOrmModule.forFeature([Post, Post_likes, Blog])],
-    providers: [PostService, ...useCases, ...repository],
+    providers: [PostService, ...useCases, ...repository, IsBlogExistConstraint],
     controllers: [PostController],
     exports: [PostService, PostRepository],
 })

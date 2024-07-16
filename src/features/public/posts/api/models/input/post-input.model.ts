@@ -2,6 +2,7 @@ import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { Trim } from '../../../../../../infrastructure/validation/custom';
 import { REACTIONS_ENUM } from '../../../../comments/api/models/output/comments.output.models';
 import { PostViewType } from '../output/post-output.model';
+import { IsBlogExist } from '../../../../../../infrastructure/decorators/blog-exist.decorator';
 
 export class createPostDto {
     @MaxLength(30)
@@ -21,7 +22,7 @@ export class createPostDto {
     @IsString()
     @IsNotEmpty()
     content: string;
-    //@IsBlogExist({ message: 'blog not found' })
+    @IsBlogExist({ message: 'blog not found' })
     @Trim()
     @IsString()
     @IsNotEmpty()

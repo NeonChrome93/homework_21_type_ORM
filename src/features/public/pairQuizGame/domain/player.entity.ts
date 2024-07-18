@@ -1,4 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { GameEntity } from './game.entity';
+import { User } from '../../../admin/users/domain/user.entity';
+import { AnswersEntity } from './answers.entity';
 
 @Entity()
 export class PlayerEntity {
@@ -11,6 +14,16 @@ export class PlayerEntity {
     @Column()
     score: string;
 
-    @Column({ array: true, type: 'text' })
-    answers: string[];
+    // @Column({ array: true, type: 'text' })
+    // answers: string[]; это просто связь
+
+    @OneToOne(() => GameEntity, game => game.player)
+    game: GameEntity;
+
+    @ManyToOne(() => User, user => user.player)
+    @JoinColumn({ name: 'userId' })
+    user: User;
+
+    @OneToMany(() => AnswersEntity, answer => answer.player)
+    answer: AnswersEntity[];
 }

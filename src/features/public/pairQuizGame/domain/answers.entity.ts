@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ANSWER_STATUS } from '../api/models/input/game.input';
+import { PlayerEntity } from './player.entity';
 
 @Entity()
 export class AnswersEntity {
@@ -15,9 +16,13 @@ export class AnswersEntity {
     @Column()
     playerId: string;
 
-    @Column({ type: 'enum', enum: ANSWER_STATUS, default: ANSWER_STATUS.Nope })
+    @Column({ type: 'enum', enum: ANSWER_STATUS })
     status: ANSWER_STATUS;
 
     @Column()
     addedAt: Date;
+
+    @ManyToOne(() => PlayerEntity, player => player.answer)
+    @JoinColumn({ name: 'playerId' })
+    player: PlayerEntity;
 }

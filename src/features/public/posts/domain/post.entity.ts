@@ -1,5 +1,5 @@
 import { REACTIONS_ENUM } from '../../comments/api/models/output/comments.output.models';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Blog } from '../../../admin/blogs/domain/blog.entity';
 import { Post_likes } from './post.lilkes.entity';
 import { Comments } from '../../comments/domain/comment.entity';
@@ -23,6 +23,7 @@ export class Post {
     title: string;
     @Column()
     shortDescription: string;
+    @Index('content1')
     @Column()
     content: string;
     @Column()

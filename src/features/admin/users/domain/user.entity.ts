@@ -4,6 +4,7 @@ import { Post_likes } from '../../../public/posts/domain/post.lilkes.entity';
 import { Comments_likes } from '../../../public/comments/domain/comments.likes.entity';
 import { Comments } from '../../../public/comments/domain/comment.entity';
 import bcrypt from 'bcrypt';
+import { PlayerEntity } from '../../../public/pairQuizGame/domain/player.entity';
 
 export type UserDbModel = {
     login: string;
@@ -51,6 +52,9 @@ export class User {
 
     @OneToMany(() => Comments, comment => comment.user)
     comment: Comments[];
+
+    @OneToMany(() => PlayerEntity, player => player.user)
+    player: PlayerEntity[];
 
     static async create({
         email,

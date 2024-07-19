@@ -22,5 +22,5 @@ export class GameQuestionEntity {
     updatedAt: Date;
 
     @OneToMany(() => GameQuestionReference, gameQuestion => gameQuestion.question)
-    gameQuestion: GameQuestionEntity[];
+    gameQuestion: GameQuestionReference[];
 }

@@ -8,11 +8,11 @@ export class GameEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({ nullable: true })
-    firstPlayerProgress: string;
+    @OneToOne(() => PlayerEntity)
+    firstPlayerProgress: PlayerEntity;
 
-    @Column({ nullable: true })
-    secondPlayerProgress: string;
+    @OneToOne(() => PlayerEntity)
+    secondPlayerProgress: PlayerEntity | null;
 
     @Column({ type: 'enum', enum: GAME_STATUS, default: GAME_STATUS.Pending })
     status: GAME_STATUS;
@@ -26,9 +26,6 @@ export class GameEntity {
 
     @Column({ nullable: true })
     finishGameDate: Date;
-
-    @OneToOne(() => PlayerEntity, player => player.game)
-    player: PlayerEntity;
 
     @OneToMany(() => GameQuestionReference, gameQuestions => gameQuestions.game)
     gameQuestions: GameQuestionReference[];

@@ -12,6 +12,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config, ConfigurationType } from './config/configuration';
 import * as dotenv from 'dotenv';
 import { QuestionModule } from './features/admin/pairQuizGameQuestions/question.module';
+import { GameModule } from './features/public/pairQuizGame/game.module';
 // import config from './config/configuration';
 
 dotenv.config();
@@ -78,6 +79,7 @@ console.log(process.env.POSTGRES_USER);
         BlogModule,
         CqrsModule,
         QuestionModule,
+        GameModule,
 
         // смотреть видео о переменных окружения
         //разнести на модули пока будет время

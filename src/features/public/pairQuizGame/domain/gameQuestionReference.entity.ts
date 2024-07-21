@@ -3,7 +3,7 @@ import { GameEntity } from './game.entity';
 import { GameQuestionEntity } from '../../../admin/pairQuizGameQuestions/domain/question.entity';
 
 @Entity()
-export class GameQuestionReference {
+export class GameQuestionReferenceEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 

@@ -4,6 +4,10 @@ import { GameQuestionEntity } from '../../../admin/pairQuizGameQuestions/domain/
 
 @Entity()
 export class GameQuestionReferenceEntity {
+    constructor(question: GameQuestionEntity, gameId: string) {
+        (this.question = question), (this.gameId = gameId);
+    }
+
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -20,7 +24,7 @@ export class GameQuestionReferenceEntity {
     @JoinColumn({ name: ' gameId' })
     game: GameEntity;
 
-    @ManyToOne(() => GameQuestionEntity, question => question.gameQuestion)
+    @ManyToOne(() => GameQuestionEntity, question => question.gameQuestions)
     @JoinColumn({ name: 'questionId' })
     question: GameQuestionEntity;
 

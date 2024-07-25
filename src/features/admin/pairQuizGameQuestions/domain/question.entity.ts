@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { GameQuestionReference } from '../../../public/pairQuizGame/domain/gameQuestionReference';
+import { GameQuestionReferenceEntity } from '../../../public/pairQuizGame/domain/gameQuestionReference.entity';
 
 @Entity()
 export class GameQuestionEntity {
@@ -21,6 +21,6 @@ export class GameQuestionEntity {
     @Column({ nullable: true })
     updatedAt: Date;
 
-    @OneToMany(() => GameQuestionReference, gameQuestion => gameQuestion.question)
-    gameQuestion: GameQuestionReference[];
+    @OneToMany(() => GameQuestionReferenceEntity, gameQuestions => gameQuestions.question)
+    gameQuestions: GameQuestionReferenceEntity[];
 }

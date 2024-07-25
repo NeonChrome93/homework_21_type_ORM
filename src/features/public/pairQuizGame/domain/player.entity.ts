@@ -11,7 +11,7 @@ export class PlayerEntity {
     userId: string;
 
     @Column()
-    score: string;
+    score: number;
 
     // @Column({ array: true, type: 'text' })
     // answers: string[]; это просто связь

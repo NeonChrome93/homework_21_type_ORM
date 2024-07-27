@@ -57,4 +57,14 @@ export class QuestionRepository {
         if (!question) return false;
         return true;
     }
+
+    async getFiveQuestions(): Promise<GameQuestionEntity[]> {
+        const questions = await this.questionRepository
+            .createQueryBuilder('game_question_entity')
+            .orderBy('RANDOM()')
+            .limit(5)
+            .getMany();
+
+        return questions;
+    }
 }

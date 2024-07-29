@@ -1,5 +1,10 @@
 export enum GAME_STATUS {
-    Pending = 'Pending',
+    Pending = 'PendingSecondPlayer',
     Active = 'Active',
     Finished = 'Finished',
+}
+
+export enum ANSWER_STATUS {
+    Correct = 'Correct',
+    Incorrect = 'Incorrect',
 }

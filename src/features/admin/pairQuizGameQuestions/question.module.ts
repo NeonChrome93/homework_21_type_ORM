@@ -21,6 +21,6 @@ import { PublishQuestionUseCase } from './application/usecases/publish-question.
         QuestionQueryRepository,
     ],
     controllers: [QuizQuestionsController],
-    exports: [],
+    exports: [TypeOrmModule],
 })
 export class QuestionModule {}

@@ -18,23 +18,23 @@ export class GameRepository {
         //     .where('g.userId = :userId', { userId: userId })
         //     .getOne();
         // return game;
-        return this.gameRepository.findOne({
-            where: [
-                { firstPlayerProgress: { userId } },
-                { secondPlayerProgress: { userId } },
-                { status: GAME_STATUS.Active },
-            ],
-        });
+        return await this.gameRepository
+            .createQueryBuilder('game')
+            .where('game.firstPlayerProgress = :userId', { userId })
+            .andWhere('game.status = :status', { status: GAME_STATUS.Active })
+            .orWhere('game.secondPlayerProgress = :userId', { userId })
+            .andWhere('game.status = :status', { status: GAME_STATUS.Active })
+            .getOne();
     }
 
-    async findGamePendingUser(userId: string): Promise<GameEntity | null> {
+    async findGamePendingUser(): Promise<GameEntity | null> {
         // const game: GameEntity | null = await this.gameRepository
         //     .createQueryBuilder('g')
         //     .where('g.userId = :userId', { userId: userId })
         //     .getOne();
         // return game;
         return this.gameRepository.findOne({
-            where: [{ secondPlayerProgress: { userId } }, { status: GAME_STATUS.Pending }],
+            where: { status: GAME_STATUS.Pending },
         });
     }
 
@@ -42,7 +42,12 @@ export class GameRepository {
         return await this.playerRepository.save(newPlayer);
     }
 
-    async createGame(newGame: Omit<GameEntity, 'id' | 'firstPlayerProgress' | 'finishGameDate'>) {
-        return await this.playerRepository.save(newGame);
+    async createGame(
+        newGame: Omit<
+            GameEntity,
+            'id' | 'firstPlayerProgress' | 'finishGameDate' | 'pairCreatedDate' | 'gameQuestions'
+        >,
+    ) {
+        return await this.gameRepository.save(newGame);
     }
 }

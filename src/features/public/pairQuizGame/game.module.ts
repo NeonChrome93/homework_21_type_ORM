@@ -8,13 +8,19 @@ import { GameEntity } from './domain/game.entity';
 import { PlayerEntity } from './domain/player.entity';
 import { AnswersEntity } from './domain/answers.entity';
 import { GameQuestionReferenceEntity } from './domain/gameQuestionReference.entity';
+import { QuestionRepository } from '../../admin/pairQuizGameQuestions/repositories/question.repository';
+import { GameRepository } from './repositories/game.repository';
+import { QuestionModule } from '../../admin/pairQuizGameQuestions/question.module';
+import { AuthModule } from '../../admin/users/auth.module';
 
 @Module({
     imports: [
         CqrsModule,
+        AuthModule,
+        QuestionModule,
         TypeOrmModule.forFeature([GameEntity, AnswersEntity, PlayerEntity, GameQuestionReferenceEntity]),
     ],
-    providers: [CreateGameUseCase, GameQueryRepository],
+    providers: [CreateGameUseCase, GameQueryRepository, GameRepository, QuestionRepository],
     controllers: [PairGameQuizController],
 })
 export class GameModule {}

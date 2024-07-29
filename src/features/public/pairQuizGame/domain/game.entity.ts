@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { GAME_STATUS } from '../api/models/input/game.input';
 import { PlayerEntity } from './player.entity';
-import { GameQuestionReference } from './gameQuestionReference';
+import { GameQuestionReferenceEntity } from './gameQuestionReference.entity';
 
 @Entity()
 export class GameEntity {
@@ -27,6 +27,6 @@ export class GameEntity {
     @Column({ nullable: true })
     finishGameDate: Date;
 
-    @OneToMany(() => GameQuestionReference, gameQuestions => gameQuestions.game)
-    gameQuestions: GameQuestionReference[];
+    @OneToMany(() => GameQuestionReferenceEntity, gameQuestions => gameQuestions.game)
+    gameQuestions: GameQuestionReferenceEntity[];
 }

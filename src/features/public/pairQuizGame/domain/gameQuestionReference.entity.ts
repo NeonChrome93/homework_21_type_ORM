@@ -1,12 +1,12 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { GameEntity } from './game.entity';
 import { GameQuestionEntity } from '../../../admin/pairQuizGameQuestions/domain/question.entity';
 
 @Entity()
-export class GameQuestionReferenceEntity {
-    constructor(question: GameQuestionEntity, gameId: string) {
-        (this.question = question), (this.gameId = gameId);
-    }
+export class GameQuestionReferenceEntity extends BaseEntity {
+    // constructor(question: GameQuestionEntity, gameId: string) {
+    //     (this.question = question), (this.gameId = gameId);
+    // }
 
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -30,4 +30,14 @@ export class GameQuestionReferenceEntity {
 
     // todo add index for GameQuestionEntity
     // todo add relations for entities
+
+    static createReference(question: GameQuestionEntity, game: GameEntity, index: number) {
+        // (this.question = question), (this.gameId = gameId);
+        const referenceQuestion = new GameQuestionReferenceEntity();
+        referenceQuestion.question = question;
+        referenceQuestion.game = game;
+        referenceQuestion.questionId = question.id;
+        referenceQuestion.gameId = game.id;
+        referenceQuestion.save();
+    }
 }

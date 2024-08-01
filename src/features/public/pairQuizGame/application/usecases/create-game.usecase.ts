@@ -7,6 +7,7 @@ import { GAME_STATUS } from '../../api/models/input/game.input';
 import { QuestionRepository } from '../../../../admin/pairQuizGameQuestions/repositories/question.repository';
 import { GameQuestionReferenceEntity } from '../../domain/gameQuestionReference.entity';
 import { GameQuestionEntity } from '../../../../admin/pairQuizGameQuestions/domain/question.entity';
+import { GameQueryRepository } from '../../repositories/game.query.repository';
 
 export class CreateGameCommand {
     constructor(public userId: string) {}
@@ -16,6 +17,7 @@ export class CreateGameCommand {
 export class CreateGameUseCase implements ICommandHandler<CreateGameCommand> {
     constructor(
         private readonly gameRepository: GameRepository,
+        private readonly gameQueryRepository: GameQueryRepository,
         private readonly questionRepository: QuestionRepository,
     ) {}
     // статуса всего три и только у игры
@@ -38,24 +40,29 @@ export class CreateGameUseCase implements ICommandHandler<CreateGameCommand> {
 
             const createPlayer = await this.gameRepository.createPlayer(secondPlayer);
             const createQuestions: GameQuestionEntity[] = await this.questionRepository.getFiveQuestions();
-            const gameCreateObj: Omit<
-                GameEntity,
-                'id' | 'firstPlayerProgress' | 'finishGameDate' | 'pairCreatedDate' | 'gameQuestions'
-            > = {
-                secondPlayerProgress: createPlayer,
-                status: GAME_STATUS.Active,
-                startGameDate: new Date(),
-                //gameQuestions: createQuestions,
-            };
+
+            gamePending.secondPlayerProgress = createPlayer;
+            gamePending.startGameDate = new Date();
+            gamePending.status = GAME_STATUS.Active;
+            // const gameCreateObj: Omit<
+            //     GameEntity,
+            //     'id' | 'firstPlayerProgress' | 'finishGameDate' | 'pairCreatedDate' | 'gameQuestions'
+            // > = {
+            //     secondPlayerProgress: createPlayer,
+            //     status: GAME_STATUS.Active,
+            //     startGameDate: new Date(),
+            //     //gameQuestions: createQuestions,
+            // };
             //соединить 5 рандомных вопроса из createQuestions с игрой: для этого нужно создать для каждого вопроса Reference к этой игре
 
             //toReference.save() //со[ранить массив
-            const createGame = await this.gameRepository.createGame(gameCreateObj);
-            const toReference = createQuestions.map(
-                question => new GameQuestionReferenceEntity(question, createGame.id),
+            const createGame = await this.gameRepository.createGame(gamePending);
+            const questionReferences = createQuestions.map((question, index) =>
+                GameQuestionReferenceEntity.createReference(question, createGame, index),
             );
+            await this.questionRepository.connectQuestionsToGame(questionReferences);
+            return this.gameQueryRepository.getGameById(gamePending.id);
         } else {
-            // Если не находим создаем сущность плеера создаем сущность игры , записываем игрока в firstPlayerProgress
             const firstPlayer: Omit<PlayerEntity, 'id' | 'user' | 'answer'> = {
                 userId: command.userId,
                 score: 0,
@@ -63,15 +70,18 @@ export class CreateGameUseCase implements ICommandHandler<CreateGameCommand> {
             };
 
             const createPlayer = await this.gameRepository.createPlayer(firstPlayer);
-            const gameCreateObj: Omit<GameEntity, 'id' | 'secondPlayerProgress' | 'finishGameDate' | 'gameQuestions'> =
-                {
-                    firstPlayerProgress: createPlayer,
-                    status: GAME_STATUS.Pending,
-                    startGameDate: new Date(),
-                    // ставим дату PairCreationDate
-                    pairCreatedDate: new Date(),
-                };
+            const gameCreateObj: Omit<
+                GameEntity,
+                'id' | 'secondPlayerProgress' | 'finishGameDate' | 'gameQuestions' | 'startGameDate'
+            > = {
+                firstPlayerProgress: createPlayer,
+                status: GAME_STATUS.Pending,
+                // startGameDate: new Date(),
+                // ставим дату PairCreationDate
+                pairCreatedDate: new Date(),
+            };
             const createGame = await this.gameRepository.createGame(gameCreateObj);
+            return this.gameQueryRepository.getGameById(createGame.id);
         }
 
         //создаем игру

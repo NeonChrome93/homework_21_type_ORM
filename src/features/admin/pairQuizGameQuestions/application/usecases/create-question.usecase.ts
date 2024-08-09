@@ -13,7 +13,7 @@ export class CreateQuestionUseCase implements ICommandHandler<CreateQuestionComm
     constructor(private readonly questionRepository: QuestionRepository) {}
 
     async execute(command: CreateQuestionCommand): Promise<QuestionViewType> {
-        const newQuestion: Omit<GameQuestionEntity, 'id'> = {
+        const newQuestion: Omit<GameQuestionEntity, 'id' | 'gameQuestions'> = {
             body: command.dto.body,
             correctAnswers: command.dto.correctAnswers,
             published: false,

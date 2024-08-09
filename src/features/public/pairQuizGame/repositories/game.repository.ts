@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GameEntity } from '../domain/game.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { GAME_STATUS } from '../api/models/input/game.input';
 import { PlayerEntity } from '../domain/player.entity';
 
@@ -18,16 +18,61 @@ export class GameRepository {
         //     .where('g.userId = :userId', { userId: userId })
         //     .getOne();
         // return game;
-        return await this.gameRepository
-            .createQueryBuilder('game')
-            .where('game.firstPlayerProgress = :userId', { userId })
-            .andWhere('game.status = :status', { status: GAME_STATUS.Active })
-            .orWhere('game.secondPlayerProgress = :userId', { userId })
-            .andWhere('game.status = :status', { status: GAME_STATUS.Active })
-            .getOne();
+
+        // return await this.gameRepository
+        //     .createQueryBuilder('game')
+        //     .select([
+        //         'game.id AS game_id',
+        //         'game.status AS game_status',
+        //         'game.pairCreatedDate AS game_pairCreatedDate',
+        //         'game.startGameDate AS game_startGameDate',
+        //         'game.finishGameDate AS game_finishGameDate',
+        //         'fpp.id AS game_firstPlayerProgressId',
+        //         'spp.id AS game_secondPlayerProgressId',
+        //     ])
+        //     .leftJoin('game.firstPlayerProgress', 'fpp')
+        //     .leftJoin('game.secondPlayerProgress', 'spp')
+        //
+        //     .where('(fpp.userId = :userId OR spp.userId = :userId)', { userId })
+        //     .andWhere('(game.status = :statusPending OR game.status = :statusActive)', {
+        //         statusActive: GAME_STATUS.Active,
+        //         statusPending: GAME_STATUS.Pending,
+        //     })
+        //     .getOne();
+
+        return await this.gameRepository.findOne({
+            relations: {
+                firstPlayerProgress: {
+                    user: true,
+                },
+                secondPlayerProgress: {
+                    user: true,
+                },
+            },
+            where: [
+                {
+                    firstPlayerProgress: {
+                        user: {
+                            id: userId,
+                        },
+                    },
+                    status: In([GAME_STATUS.Active, GAME_STATUS.Pending]),
+                },
+                {
+                    secondPlayerProgress: {
+                        user: {
+                            id: userId,
+                        },
+                    },
+                    status: In([GAME_STATUS.Active, GAME_STATUS.Pending]),
+                },
+            ],
+        });
+
+        //.посмотреть скобочки TypeORM
     }
 
-    async findGamePendingUser(): Promise<GameEntity | null> {
+    async findGamePendingUser(userId: string): Promise<GameEntity | null> {
         // const game: GameEntity | null = await this.gameRepository
         //     .createQueryBuilder('g')
         //     .where('g.userId = :userId', { userId: userId })
@@ -35,6 +80,7 @@ export class GameRepository {
         // return game;
         return this.gameRepository.findOne({
             where: { status: GAME_STATUS.Pending },
+            //userId: Not(userId),
         });
     }
 
@@ -43,10 +89,7 @@ export class GameRepository {
     }
 
     async createGame(
-        newGame: Omit<
-            GameEntity,
-            'id' | 'firstPlayerProgress' | 'finishGameDate' | 'pairCreatedDate' | 'gameQuestions'
-        >,
+        newGame: Omit<GameEntity, 'id' | 'secondPlayerProgress' | 'finishGameDate' | 'gameQuestions' | 'startGameDate'>,
     ) {
         return await this.gameRepository.save(newGame);
     }

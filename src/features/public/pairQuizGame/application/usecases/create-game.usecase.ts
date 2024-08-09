@@ -25,13 +25,19 @@ export class CreateGameUseCase implements ICommandHandler<CreateGameCommand> {
         // пойти в базу найти игру в которой игрок с юзерайди из токена уже учавствует
         // если нет тогда идем в базу и ищем игру с статусом PendingSecondUser
         const gameIsActive = await this.gameRepository.findGameByUserId(command.userId);
+        console.log(gameIsActive, '1212121');
         // если есть такая игра то 403
         if (gameIsActive) throw new ForbiddenException('User is already participating in a game');
         // если нет тогда идем в базу и ищем игру с статусом PendingSecondUser
-        const gamePending = await this.gameRepository.findGamePendingUser();
+        const gamePending = await this.gameRepository.findGamePendingUser(command.userId);
         // Если находим то в secondPlayerProgress добавляем игрка (создаем сущность плеера в базе)
         //создаем игру
         if (gamePending) {
+            if (gamePending.firstPlayerProgress && gamePending.firstPlayerProgress.userId === command.userId) {
+                throw new ForbiddenException(
+                    'Пользователь не может присоединиться к своей собственной игре как второй игрок',
+                );
+            }
             const secondPlayer: Omit<PlayerEntity, 'id' | 'user' | 'answer'> = {
                 userId: command.userId,
                 score: 0,

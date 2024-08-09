@@ -21,6 +21,6 @@ export class GameQuestionEntity {
     @Column({ nullable: true })
     updatedAt: Date;
 
-    @OneToMany(() => GameQuestionReferenceEntity, gameQuestions => gameQuestions.question)
+    @OneToMany(() => GameQuestionReferenceEntity, gameQuestions => gameQuestions.question, { onDelete: 'CASCADE' })
     gameQuestions: GameQuestionReferenceEntity[];
 }

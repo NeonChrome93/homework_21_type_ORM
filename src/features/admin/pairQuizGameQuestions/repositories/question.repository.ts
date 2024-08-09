@@ -3,14 +3,23 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GameQuestionEntity } from '../domain/question.entity';
 import { PublishedQuestionDto, UpdateQuestionDto } from '../api/models/input/input-question';
+import { GameQuestionReferenceEntity } from '../../../public/pairQuizGame/domain/gameQuestionReference.entity';
 
 @Injectable()
 export class QuestionRepository {
-    constructor(@InjectRepository(GameQuestionEntity) public questionRepository: Repository<GameQuestionEntity>) {}
+    constructor(
+        @InjectRepository(GameQuestionEntity) public questionRepository: Repository<GameQuestionEntity>,
+        @InjectRepository(GameQuestionReferenceEntity)
+        public questionReferenceRepository: Repository<GameQuestionReferenceEntity>,
+    ) {}
 
-    async createQuestion(newQuestion: Omit<GameQuestionEntity, 'id'>): Promise<GameQuestionEntity> {
+    async createQuestion(newQuestion: Omit<GameQuestionEntity, 'id' | 'gameQuestions'>): Promise<GameQuestionEntity> {
         //const createdQuestion = this.questionRepository.create(newQuestion);
         return await this.questionRepository.save(newQuestion);
+    }
+    async connectQuestionsToGame(questions: GameQuestionReferenceEntity[]) {
+        //repo/save(questions)
+        return await this.questionReferenceRepository.save(questions);
     }
 
     async readQuestionById(id: string): Promise<GameQuestionEntity | null> {

@@ -24,7 +24,7 @@ export class GameQuestionReferenceEntity extends BaseEntity {
     @JoinColumn({ name: ' gameId' })
     game: GameEntity;
 
-    @ManyToOne(() => GameQuestionEntity, question => question.gameQuestions)
+    @ManyToOne(() => GameQuestionEntity, question => question.gameQuestions, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'questionId' })
     question: GameQuestionEntity;
 
@@ -33,11 +33,13 @@ export class GameQuestionReferenceEntity extends BaseEntity {
 
     static createReference(question: GameQuestionEntity, game: GameEntity, index: number) {
         // (this.question = question), (this.gameId = gameId);
-        const referenceQuestion = new GameQuestionReferenceEntity();
-        referenceQuestion.question = question;
-        referenceQuestion.game = game;
+        const referenceQuestion = new this();
+        // referenceQuestion.question = question;
+        // referenceQuestion.game = game;
         referenceQuestion.questionId = question.id;
         referenceQuestion.gameId = game.id;
-        referenceQuestion.save();
+        referenceQuestion.index = index;
+
+        return referenceQuestion;
     }
 }

@@ -9,9 +9,10 @@ import { QuestionQueryRepository } from './repositories/question.query.repositor
 import { DeleteQuestionUseCase } from './application/usecases/delete-question.usecase';
 import { UpdateQuestionUseCase } from './application/usecases/update-question.usecase';
 import { PublishQuestionUseCase } from './application/usecases/publish-question.usecase';
+import { GameQuestionReferenceEntity } from '../../public/pairQuizGame/domain/gameQuestionReference.entity';
 
 @Module({
-    imports: [CqrsModule, TypeOrmModule.forFeature([GameQuestionEntity])],
+    imports: [CqrsModule, TypeOrmModule.forFeature([GameQuestionEntity, GameQuestionReferenceEntity])],
     providers: [
         QuestionRepository,
         CreateQuestionUseCase,

@@ -45,12 +45,38 @@ describe('Question API', () => {
         await request(app.getHttpServer()).post('/sa/quiz/questions').set(headers).send(createQuestion).expect(201);
     });
 
-    it('Update Question', async () => {
+    it('Update Question By Id', async () => {
         const question = await request(app.getHttpServer())
             .post('/sa/quiz/questions')
             .set(headers)
             .send(createQuestion)
             .expect(201);
-        await request(app.getHttpServer()).put('/sa/quiz/questions').set(headers).send(updateQuestion).expect(204);
+        await request(app.getHttpServer())
+            .put(`/sa/quiz/questions/${question.body.id}`)
+            .set(headers)
+            .send(updateQuestion)
+            .expect(204);
+    });
+
+    it('Publish Question', async () => {
+        const question = await request(app.getHttpServer())
+            .post('/sa/quiz/questions')
+            .set(headers)
+            .send(createQuestion)
+            .expect(201);
+        await request(app.getHttpServer())
+            .put(`/sa/quiz/questions/${question.body.id}/publish`)
+            .set(headers)
+            .send({ published: true })
+            .expect(204);
+    });
+
+    it('Delete Question', async () => {
+        const question = await request(app.getHttpServer())
+            .post('/sa/quiz/questions')
+            .set(headers)
+            .send(createQuestion)
+            .expect(201);
+        await request(app.getHttpServer()).delete(`/sa/quiz/questions/${question.body.id}`).set(headers).expect(204);
     });
 });

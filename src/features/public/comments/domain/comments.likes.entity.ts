@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { REACTIONS_ENUM } from '../api/models/output/comments.output.models';
 import { User } from '../../../admin/users/domain/user.entity';
 import { Comments } from './comment.entity';

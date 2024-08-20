@@ -4,12 +4,14 @@ import { GameEntity } from '../domain/game.entity';
 import { In, Repository } from 'typeorm';
 import { GAME_STATUS } from '../api/models/input/game.input';
 import { PlayerEntity } from '../domain/player.entity';
+import { AnswersEntity } from '../domain/answers.entity';
 
 @Injectable()
 export class GameRepository {
     constructor(
         @InjectRepository(GameEntity) public gameRepository: Repository<GameEntity>,
         @InjectRepository(PlayerEntity) public playerRepository: Repository<PlayerEntity>,
+        @InjectRepository(AnswersEntity) public answerRepository: Repository<AnswersEntity>,
     ) {}
 
     async findGameByUserId(userId: string): Promise<GameEntity | null> {
@@ -86,6 +88,10 @@ export class GameRepository {
 
     async createPlayer(newPlayer: Omit<PlayerEntity, 'id' | 'user' | 'answer'>) {
         return await this.playerRepository.save(newPlayer);
+    }
+
+    async createAnswer(answer: Omit<AnswersEntity, 'id' | 'text' | 'status' | 'player'>) {
+        return await this.answerRepository.save(answer);
     }
 
     async createGame(

@@ -14,6 +14,7 @@ import { BearerAuthGuard } from '../../../../infrastructure/guards/user.guard';
 import { UserId } from '../../../../infrastructure/decorators/get-user.decorator';
 import { CreateGameCommand } from '../application/usecases/create-game.usecase';
 import { GameQueryRepository } from '../repositories/game.query.repository';
+import { AnswerCommand, CreateAnswerUseCase } from '../application/usecases/create-answer.usecase';
 
 @Controller('pair-game-quiz/pairs')
 export class PairGameQuizController {
@@ -23,8 +24,10 @@ export class PairGameQuizController {
     ) {}
 
     @Get('my-current')
-    async getCurrentGame() {
-        const currentGame = await this.commandBus.execute(null); //.getCurrentGame();
+    @UseGuards(BearerAuthGuard)
+    async getCurrentGame(@UserId() userId: string) {
+        //const currentGame = await this.commandBus.execute(null); //.getCurrentGame();
+        const currentGame = await this.gameQueryRepo.findCurrentGameByUserId(userId);
         if (!currentGame) {
             throw new NotFoundException('No active pair for current user');
         }
@@ -58,15 +61,13 @@ export class PairGameQuizController {
     }
 
     @Post('my-current/answers')
-    //мне приходит ответ в бади, по токену определяю кто ответил, существует ли эта игра,
-    // определяю кто он конкретно первый или второй, сранивниваю массив ответов игры и массив вопросов плеера определяю на какой конретно ответ ждется вопрос.
-    // По айти вопроса иду в базу достаю его и сравниваю его ответ с корретным ответом из массива в базе. Добавляю баллы. Создаю сущность ответа и сохраняю в базе и возвращаю результает
-    async sendAnswer(@Body('answer') answer: string) {
+    @UseGuards(BearerAuthGuard)
+    async sendAnswer(@Body('answer') answer: string, @UserId() userId: string) {
         try {
-            return await this.commandBus.execute(null); //sendAnswer(answer);
+            return await this.commandBus.execute(new AnswerCommand(userId, answer)); //sendAnswer(answer);
         } catch (error) {
             if (
-                error.message === 'User not in active pair' ||
+                error.message === 'Game not found or is not active' ||
                 error.message === 'User has already answered all questions'
             ) {
                 throw new ForbiddenException(error.message);

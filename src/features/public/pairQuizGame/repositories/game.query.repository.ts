@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, In, Repository } from 'typeorm';
 import { GameEntity } from '../domain/game.entity';
 import { GameModel } from '../api/models/output/game.output';
 import { PlayerEntity } from '../domain/player.entity';
+import { GAME_STATUS } from '../api/models/input/game.input';
 
 @Injectable()
 export class GameQueryRepository {
@@ -96,6 +97,80 @@ export class GameQueryRepository {
         }
 
         return this.mapToGameModel(gameEntity);
+    }
+
+    async findCurrentGameByUserId(userId: string): Promise<GameEntity | null> {
+        const game = await this.gameQueryRepository.findOne({
+            relations: {
+                firstPlayerProgress: { user: true, answer: true },
+                secondPlayerProgress: { user: true, answer: true },
+                gameQuestions: { question: { gameQuestions: true } },
+            },
+            select: {
+                id: true,
+                firstPlayerProgress: {
+                    id: true,
+                    user: { id: true, login: true },
+                    score: true,
+                    answer: {
+                        questionId: true,
+                        status: true,
+                        addedAt: true, //сортироывка
+                    },
+                },
+                secondPlayerProgress: {
+                    id: true,
+                    user: { id: true, login: true },
+                    score: true,
+                    answer: {
+                        questionId: true,
+                        status: true,
+                        addedAt: true, //сортировка
+                    },
+                },
+                gameQuestions: {
+                    id: true,
+                    index: true,
+                    question: {
+                        id: true,
+                        body: true,
+                    },
+                },
+                status: true,
+                pairCreatedDate: true,
+                startGameDate: true,
+                finishGameDate: true,
+            },
+            order: {
+                gameQuestions: { index: 'ASC' },
+                firstPlayerProgress: { answer: { addedAt: 'ASC' } },
+                secondPlayerProgress: { answer: { addedAt: 'ASC' } },
+            },
+            where: [
+                {
+                    firstPlayerProgress: {
+                        user: {
+                            id: userId,
+                        },
+                    },
+                    status: In([GAME_STATUS.Active, GAME_STATUS.Pending]),
+                },
+                {
+                    secondPlayerProgress: {
+                        user: {
+                            id: userId,
+                        },
+                    },
+                    status: In([GAME_STATUS.Active, GAME_STATUS.Pending]),
+                },
+            ],
+        });
+        if (!game) {
+            return null;
+        }
+
+        return this.mapToGameModel(game);
+        //.посмотреть скобочки TypeORM
     }
 
     private mapToGameModel(gameEntity: GameEntity): GameModel {

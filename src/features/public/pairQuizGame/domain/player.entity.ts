@@ -13,9 +13,6 @@ export class PlayerEntity {
     @Column()
     score: number;
 
-    // @Column({ array: true, type: 'text' })
-    // answers: string[]; это просто связь
-
     @ManyToOne(() => User, user => user.player)
     @JoinColumn({ name: 'userId' })
     user: User;

@@ -12,21 +12,21 @@ export class GameQuestionReferenceEntity extends BaseEntity {
     id: string;
 
     @Column()
-    questionId: string;
+    index: number;
+
+    @ManyToOne(() => GameEntity, game => game.gameQuestions)
+    @JoinColumn({ name: 'gameId' })
+    game: GameEntity;
 
     @Column()
     gameId: string;
 
-    @Column()
-    index: number;
-
-    @ManyToOne(() => GameEntity, game => game.gameQuestions)
-    @JoinColumn({ name: ' gameId' })
-    game: GameEntity;
-
     @ManyToOne(() => GameQuestionEntity, question => question.gameQuestions, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'questionId' })
     question: GameQuestionEntity;
+
+    @Column()
+    questionId: string;
 
     // todo add index for GameQuestionEntity
     // todo add relations for entities

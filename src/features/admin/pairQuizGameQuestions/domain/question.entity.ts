@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { GameQuestionReferenceEntity } from '../../../public/pairQuizGame/domain/gameQuestionReference.entity';
+import { AnswersEntity } from '../../../public/pairQuizGame/domain/answers.entity';
 
 @Entity()
 export class GameQuestionEntity {
@@ -9,7 +10,7 @@ export class GameQuestionEntity {
     @Column()
     body: string;
 
-    @Column({ array: true, type: 'text' })
+    @Column({ array: true, type: 'character varying' })
     correctAnswers: string[];
 
     @Column()
@@ -23,4 +24,7 @@ export class GameQuestionEntity {
 
     @OneToMany(() => GameQuestionReferenceEntity, gameQuestions => gameQuestions.question, { onDelete: 'CASCADE' })
     gameQuestions: GameQuestionReferenceEntity[];
+
+    // @OneToMany(() => AnswersEntity, answers => answers.question, { onDelete: 'CASCADE' })
+    // answers: AnswersEntity[];
 }

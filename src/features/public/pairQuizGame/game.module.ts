@@ -12,6 +12,7 @@ import { QuestionRepository } from '../../admin/pairQuizGameQuestions/repositori
 import { GameRepository } from './repositories/game.repository';
 import { QuestionModule } from '../../admin/pairQuizGameQuestions/question.module';
 import { AuthModule } from '../../admin/users/auth.module';
+import { CreateAnswerUseCase } from './application/usecases/create-answer.usecase';
 
 @Module({
     imports: [
@@ -20,7 +21,7 @@ import { AuthModule } from '../../admin/users/auth.module';
         QuestionModule,
         TypeOrmModule.forFeature([GameEntity, AnswersEntity, PlayerEntity, GameQuestionReferenceEntity]),
     ],
-    providers: [CreateGameUseCase, GameQueryRepository, GameRepository, QuestionRepository],
+    providers: [CreateGameUseCase, CreateAnswerUseCase, GameQueryRepository, GameRepository, QuestionRepository],
     controllers: [PairGameQuizController],
 })
 export class GameModule {}

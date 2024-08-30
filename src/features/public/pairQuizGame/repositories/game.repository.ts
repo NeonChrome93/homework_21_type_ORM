@@ -44,12 +44,53 @@ export class GameRepository {
 
         return await this.gameRepository.findOne({
             relations: {
+                firstPlayerProgress: { user: true, answer: true },
+                secondPlayerProgress: { user: true, answer: true },
+                gameQuestions: { question: { gameQuestions: true } },
+            },
+            select: {
+                id: true,
                 firstPlayerProgress: {
-                    user: true,
+                    id: true,
+                    user: { id: true, login: true },
+                    score: true,
+                    answer: {
+                        id: true,
+                        questionId: true,
+                        status: true,
+                        addedAt: true, //сортироывка
+                    },
                 },
                 secondPlayerProgress: {
-                    user: true,
+                    id: true,
+                    user: { id: true, login: true },
+                    score: true,
+                    answer: {
+                        id: true,
+                        questionId: true,
+                        status: true,
+                        addedAt: true, //сортировка
+                    },
                 },
+                gameQuestions: {
+                    id: true,
+                    index: true,
+                    question: {
+                        id: true,
+                        body: true,
+                        correctAnswers: true,
+                    },
+                },
+
+                status: true,
+                pairCreatedDate: true,
+                startGameDate: true,
+                finishGameDate: true,
+            },
+            order: {
+                gameQuestions: { index: 'ASC' },
+                firstPlayerProgress: { answer: { addedAt: 'ASC' } },
+                secondPlayerProgress: { answer: { addedAt: 'ASC' } },
             },
             where: [
                 {
@@ -90,7 +131,7 @@ export class GameRepository {
         return await this.playerRepository.save(newPlayer);
     }
 
-    async createAnswer(answer: Omit<AnswersEntity, 'id' | 'text' | 'status' | 'player'>) {
+    async createAnswer(answer: AnswersEntity) {
         return await this.answerRepository.save(answer);
     }
 
@@ -98,5 +139,48 @@ export class GameRepository {
         newGame: Omit<GameEntity, 'id' | 'secondPlayerProgress' | 'finishGameDate' | 'gameQuestions' | 'startGameDate'>,
     ) {
         return await this.gameRepository.save(newGame);
+    }
+
+    async findAnswers(playerId: string) {
+        return await this.answerRepository.find({
+            where: { playerId },
+        });
+    }
+
+    async findGameById(gameId: string): Promise<GameEntity> {
+        return await this.gameRepository.findOne({
+            relations: {
+                firstPlayerProgress: {
+                    answer: true,
+                },
+                secondPlayerProgress: {
+                    answer: true,
+                },
+            },
+            where: { id: gameId },
+        });
+    }
+
+    async finishGame(game: GameEntity) {
+        await this.gameRepository.update(
+            { id: game.id },
+            {
+                status: GAME_STATUS.Finished,
+                finishGameDate: new Date(),
+            },
+        );
+        const isFirst =
+            game.firstPlayerProgress.score &&
+            game.firstPlayerProgress.answer[4].addedAt < game.secondPlayerProgress.answer[4].addedAt;
+        const isSecond = !!game.firstPlayerProgress.score;
+        if (isFirst) {
+            await this.playerRepository.update({ id: game.firstPlayerProgress.id }, { score: () => 'score + 1' });
+        } else if (isSecond) {
+            await this.playerRepository.update({ id: game.secondPlayerProgress.id }, { score: () => 'score + 1' });
+        }
+    }
+
+    async incrementPlayerScore(id: string, value: number) {
+        await this.playerRepository.update({ id }, { score: () => `score + ${value}` });
     }
 }

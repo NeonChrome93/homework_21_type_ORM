@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, In, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { GameEntity } from '../domain/game.entity';
 import { GameModel } from '../api/models/output/game.output';
 import { PlayerEntity } from '../domain/player.entity';
@@ -29,6 +29,7 @@ export class GameQueryRepository {
                     user: { id: true, login: true },
                     score: true,
                     answer: {
+                        id: true,
                         questionId: true,
                         status: true,
                         addedAt: true, //сортироывка
@@ -39,6 +40,7 @@ export class GameQueryRepository {
                     user: { id: true, login: true },
                     score: true,
                     answer: {
+                        id: true,
                         questionId: true,
                         status: true,
                         addedAt: true, //сортировка
@@ -99,48 +101,50 @@ export class GameQueryRepository {
         return this.mapToGameModel(gameEntity);
     }
 
-    async findCurrentGameByUserId(userId: string): Promise<GameEntity | null> {
-        const game = await this.gameQueryRepository.findOne({
+    async findCurrentGameByUserId(userId: string): Promise<GameModel | null> {
+        const game: GameEntity = await this.gameQueryRepository.findOne({
             relations: {
                 firstPlayerProgress: { user: true, answer: true },
                 secondPlayerProgress: { user: true, answer: true },
                 gameQuestions: { question: { gameQuestions: true } },
             },
-            select: {
-                id: true,
-                firstPlayerProgress: {
-                    id: true,
-                    user: { id: true, login: true },
-                    score: true,
-                    answer: {
-                        questionId: true,
-                        status: true,
-                        addedAt: true, //сортироывка
-                    },
-                },
-                secondPlayerProgress: {
-                    id: true,
-                    user: { id: true, login: true },
-                    score: true,
-                    answer: {
-                        questionId: true,
-                        status: true,
-                        addedAt: true, //сортировка
-                    },
-                },
-                gameQuestions: {
-                    id: true,
-                    index: true,
-                    question: {
-                        id: true,
-                        body: true,
-                    },
-                },
-                status: true,
-                pairCreatedDate: true,
-                startGameDate: true,
-                finishGameDate: true,
-            },
+            // select: {
+            //     id: true,
+            //     firstPlayerProgress: {
+            //         id: true,
+            //         user: { id: true, login: true },
+            //         score: true,
+            //         answer: {
+            //             id: true,
+            //             questionId: true,
+            //             status: true,
+            //             addedAt: true, //сортироывка
+            //         },
+            //     },
+            //     secondPlayerProgress: {
+            //         id: true,
+            //         user: { id: true, login: true },
+            //         score: true,
+            //         answer: {
+            //             id: true,
+            //             questionId: true,
+            //             status: true,
+            //             addedAt: true, //сортировка
+            //         },
+            //     },
+            //     gameQuestions: {
+            //         id: true,
+            //         index: true,
+            //         question: {
+            //             id: true,
+            //             body: true,
+            //         },
+            //     },
+            //     status: true,
+            //     pairCreatedDate: true,
+            //     startGameDate: true,
+            //     finishGameDate: true,
+            // },
             order: {
                 gameQuestions: { index: 'ASC' },
                 firstPlayerProgress: { answer: { addedAt: 'ASC' } },
@@ -165,12 +169,8 @@ export class GameQueryRepository {
                 },
             ],
         });
-        if (!game) {
-            return null;
-        }
-
+        if (!game) return null;
         return this.mapToGameModel(game);
-        //.посмотреть скобочки TypeORM
     }
 
     private mapToGameModel(gameEntity: GameEntity): GameModel {
@@ -202,10 +202,12 @@ export class GameQueryRepository {
                       score: gameEntity.secondPlayerProgress.score,
                   }
                 : null,
-            questions: gameEntity.gameQuestions.map(gq => ({
-                id: gq.question.id,
-                body: gq.question.body,
-            })),
+            questions: gameEntity.gameQuestions.length
+                ? gameEntity.gameQuestions.map(gq => ({
+                      id: gq.question.id,
+                      body: gq.question.body,
+                  }))
+                : null,
             status: gameEntity.status,
             pairCreatedDate: gameEntity.pairCreatedDate?.toISOString() ?? null,
             startGameDate: gameEntity.startGameDate?.toISOString() ?? null,

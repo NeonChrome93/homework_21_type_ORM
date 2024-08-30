@@ -5,7 +5,7 @@ import { AppModule } from '../app.module';
 import { Device } from '../features/public/devices/domain/device.entity';
 import { JwtAdapter } from '../features/public/auth/adapters/jwt.adapter';
 import { agent as request } from 'supertest';
-import { createNewUserModel, createUser, unpackingToken } from './utils/utils';
+import { createNewUserModel, createUser, unpackingToken } from './utils';
 import { DevicesQueryRepository } from '../features/public/devices/repositories/device.query.repository';
 
 let deviceGlobal: Device | null = null;

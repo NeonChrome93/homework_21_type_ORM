@@ -31,7 +31,7 @@ export class AnswersEntity {
     @Column()
     addedAt: Date;
     //сдеалть связь как у плеера
-    @ManyToOne(() => PlayerEntity, player => player.answer)
+    @ManyToOne(() => PlayerEntity, player => player.answer, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'playerId' })
     player: PlayerEntity;
 

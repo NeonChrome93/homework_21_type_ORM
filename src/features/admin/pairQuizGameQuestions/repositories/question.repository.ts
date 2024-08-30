@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { GameQuestionEntity } from '../domain/question.entity';
 import { PublishedQuestionDto, UpdateQuestionDto } from '../api/models/input/input-question';
 import { GameQuestionReferenceEntity } from '../../../public/pairQuizGame/domain/gameQuestionReference.entity';
+import { log } from 'util';
 
 @Injectable()
 export class QuestionRepository {
@@ -73,7 +74,7 @@ export class QuestionRepository {
             .orderBy('RANDOM()')
             .limit(5)
             .getMany();
-
+        console.log('5 Questions', questions);
         return questions;
     }
 }

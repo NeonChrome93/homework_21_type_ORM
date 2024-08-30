@@ -27,17 +27,16 @@ export class CreateGameUseCase implements ICommandHandler<CreateGameCommand> {
         const gameIsActive = await this.gameRepository.findGameByUserId(command.userId);
         console.log(gameIsActive, '1212121');
         // если есть такая игра то 403
-        if (gameIsActive) throw new ForbiddenException('User is already participating in a game');
+        if (gameIsActive) throw new ForbiddenException('User already in active pair');
         // если нет тогда идем в базу и ищем игру с статусом PendingSecondUser
         const gamePending = await this.gameRepository.findGamePendingUser(command.userId);
         // Если находим то в secondPlayerProgress добавляем игрка (создаем сущность плеера в базе)
         //создаем игру
         if (gamePending) {
             if (gamePending.firstPlayerProgress && gamePending.firstPlayerProgress.userId === command.userId) {
-                throw new ForbiddenException(
-                    'Пользователь не может присоединиться к своей собственной игре как второй игрок',
-                );
+                throw new ForbiddenException('User already in active pair');
             }
+            console.log('UserId', command.userId);
             const secondPlayer: Omit<PlayerEntity, 'id' | 'user' | 'answer'> = {
                 userId: command.userId,
                 score: 0,
@@ -69,6 +68,7 @@ export class CreateGameUseCase implements ICommandHandler<CreateGameCommand> {
             await this.questionRepository.connectQuestionsToGame(questionReferences);
             return this.gameQueryRepository.getGameById(gamePending.id);
         } else {
+            console.log('UserId', command.userId);
             const firstPlayer: Omit<PlayerEntity, 'id' | 'user' | 'answer'> = {
                 userId: command.userId,
                 score: 0,
@@ -100,5 +100,6 @@ export class CreateGameUseCase implements ICommandHandler<CreateGameCommand> {
     }
     // todo dockerfile dockercomposefile docker swarn docker standalone jenkinsfile CI/CD
     // TODO  НА ПРАКТИКЕ УМЕТЬ ПОДНЯТЬ БАЗУ МОНГО ПОСТГРЕС РЕДИС  ТВОЕ ПРИЛОЖЕНИЕ И NGINX ДЛЯ ПРОКСИРОВАНИЯ
+    //pull merge
     // ZABBIX GRAFANA TERRAFORM
 }

@@ -40,6 +40,7 @@ export class User {
     passwordRecoveryCode: string | null;
     @Column({ default: null })
     expirationDateOfRecoveryCode: Date | null;
+    //Еще одно поле статистика и на каждое дейсвие пользователя обновять и создать сущность статистика
 
     @OneToMany(() => Post_likes, likes => likes.user)
     postLikes: Post_likes[];

@@ -3,6 +3,7 @@ import {
     Controller,
     ForbiddenException,
     Get,
+    HttpCode,
     NotFoundException,
     Param,
     ParseUUIDPipe,
@@ -14,7 +15,8 @@ import { BearerAuthGuard } from '../../../../infrastructure/guards/user.guard';
 import { UserId } from '../../../../infrastructure/decorators/get-user.decorator';
 import { CreateGameCommand } from '../application/usecases/create-game.usecase';
 import { GameQueryRepository } from '../repositories/game.query.repository';
-import { AnswerCommand, CreateAnswerUseCase } from '../application/usecases/create-answer.usecase';
+import { AnswerCommand } from '../application/usecases/create-answer.usecase';
+import { GAME_STATUS } from './models/input/game.input';
 
 @Controller('pair-game-quiz/pairs')
 export class PairGameQuizController {
@@ -28,6 +30,7 @@ export class PairGameQuizController {
     async getCurrentGame(@UserId() userId: string) {
         //const currentGame = await this.commandBus.execute(null); //.getCurrentGame();
         const currentGame = await this.gameQueryRepo.findCurrentGameByUserId(userId);
+        console.log(currentGame, ' currentGame');
         if (!currentGame) {
             throw new NotFoundException('No active pair for current user');
         }
@@ -38,6 +41,7 @@ export class PairGameQuizController {
     async getGameById(@Param('id', ParseUUIDPipe) id: string, @UserId() userId: string) {
         const game = await this.gameQueryRepo.getGameById(id); //getGameById(id);
         //нужно проверить что юзер айти из токена совпадает с юзер ид из плееров в этой игре, добавить гард
+        console.log(game, 'BYID');
         if (!game) {
             throw new NotFoundException('Game not found');
         } else if (game.firstPlayerProgress.player.id !== userId && game.secondPlayerProgress?.player?.id !== userId) {
@@ -48,8 +52,9 @@ export class PairGameQuizController {
 
     @Post('connection')
     @UseGuards(BearerAuthGuard)
-    //@HttpCode(201)
+    @HttpCode(200)
     async connectOrCreatePair(@UserId() userId: string) {
+        console.log('user', userId);
         try {
             return await this.commandBus.execute(new CreateGameCommand(userId));
         } catch (error) {
@@ -62,10 +67,12 @@ export class PairGameQuizController {
 
     @Post('my-current/answers')
     @UseGuards(BearerAuthGuard)
+    @HttpCode(200)
     async sendAnswer(@Body('answer') answer: string, @UserId() userId: string) {
         try {
             return await this.commandBus.execute(new AnswerCommand(userId, answer)); //sendAnswer(answer);
         } catch (error) {
+            console.log('Error', error);
             if (
                 error.message === 'Game not found or is not active' ||
                 error.message === 'User has already answered all questions'

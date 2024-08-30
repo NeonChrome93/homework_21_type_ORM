@@ -17,17 +17,17 @@ const createUser2 = {
 
 const createQuestion1 = {
     body: 'ivar11111111',
-    correctAnswers: ['correct_answer_1'],
+    correctAnswers: ['correct_answer'],
 };
 
 const createQuestion2 = {
     body: 'ivar11111112',
-    correctAnswers: ['correct_answer_1'],
+    correctAnswers: ['correct_answer'],
 };
 
 const createQuestion3 = {
     body: 'ivar11111111',
-    correctAnswers: ['correct_answer_1'],
+    correctAnswers: ['correct_answer'],
 };
 
 const headers = {
@@ -78,8 +78,8 @@ describe(
             const resTwo = await request(app.getHttpServer())
                 .post('/auth/login')
                 .send({
-                    loginOrEmail: createUser1.login,
-                    password: createUser1.password,
+                    loginOrEmail: createUser2.login,
+                    password: createUser2.password,
                 })
                 .expect(200);
             tokenTwo = resTwo.body.accessToken;
@@ -109,6 +109,11 @@ describe(
                 .post('/pair-game-quiz/pairs/connection')
                 .set({ authorization: 'Bearer ' + tokenOne })
                 .expect(200);
+
+            await request(app.getHttpServer())
+                .post('/pair-game-quiz/pairs/connection')
+                .set({ authorization: 'Bearer ' + tokenOne })
+                .expect(403);
             gameId = createGameResponse.body.id;
 
             // Connect second player
@@ -121,8 +126,15 @@ describe(
             await request(app.getHttpServer())
                 .post(`/pair-game-quiz/pairs/my-current/answers`)
                 .set({ authorization: 'Bearer ' + tokenOne })
-                .send({ answer: 'correct_answer_1' })
+                .send({ answer: 'correct_answer' })
                 .expect(200);
+
+            const FPCurrentGameAfterFirstAnswer = await request(app.getHttpServer())
+                .get(`/pair-game-quiz/pairs/my-current`)
+                .set({ authorization: 'Bearer ' + tokenOne })
+                .expect(200);
+
+            expect(FPCurrentGameAfterFirstAnswer.body.firstPlayerProgress.answers.length).toBe(1);
 
             // Add incorrect answer by second player
             await request(app.getHttpServer())
@@ -131,12 +143,32 @@ describe(
                 .send({ answer: 'incorrect_answer' })
                 .expect(200);
 
+            const SPCurrentGameAfterFirstAnswer = await request(app.getHttpServer())
+                .get(`/pair-game-quiz/pairs/my-current`)
+                .set({ authorization: 'Bearer ' + tokenTwo })
+                .expect(200);
+            console.log(SPCurrentGameAfterFirstAnswer.body, ' SPCurrentGameAfterFirstAnswer.body');
+            expect(SPCurrentGameAfterFirstAnswer.body.secondPlayerProgress.answers.length).toBe(1);
+
             // Add correct answer by second player
             await request(app.getHttpServer())
                 .post(`/pair-game-quiz/pairs/my-current/answers`)
                 .set({ authorization: 'Bearer ' + tokenTwo })
-                .send({ answer: 'correct_answer_2' })
+                .send({ answer: 'correct_answer' })
                 .expect(200);
+
+            const SPCurrentGameAfterSecondAnswer = await request(app.getHttpServer())
+                .get(`/pair-game-quiz/pairs/my-current`)
+                .set({ authorization: 'Bearer ' + tokenTwo })
+                .expect(200);
+
+            const SPGameByIdAfterSecondAnswer = await request(app.getHttpServer())
+                .get(`/pair-game-quiz/pairs/${gameId}`)
+                .set({ authorization: 'Bearer ' + tokenTwo })
+                .expect(200);
+
+            expect(SPCurrentGameAfterSecondAnswer.body.secondPlayerProgress.answers.length).toBe(2);
+            expect(SPGameByIdAfterSecondAnswer.body.secondPlayerProgress.answers.length).toBe(2);
         });
     },
 );
